@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:hti_trialpathway/login.dart';
+import 'package:hti_trialpathway/user_type.dart';
 
 void main() {
   runApp(const MyApp());
