@@ -14,7 +14,7 @@ class _InfoState extends State<Info> {
     return Column(
       children: [
         Text('Title'),
-        TextField()
+
       ],
     );
   }
