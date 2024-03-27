@@ -13,7 +13,7 @@ class _InfoState extends State<Info> {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        Text('Title'),
+
       ],
     );
   }

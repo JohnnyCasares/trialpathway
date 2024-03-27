@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hti_trialpathway/researcher/research_main.dart';
-
-import '../custom_widgets/custom_textformfield.dart';
+import '../widgets/custom_textformfield.dart';
 
 class ResearchLogin extends StatefulWidget {
   const ResearchLogin({super.key});

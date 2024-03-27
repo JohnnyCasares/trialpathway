@@ -7,12 +7,13 @@ class ClinicalTrialModel extends ClinicalTrial {
   //outcomesModule-> may contain: primaryOutcomes and secondaryOutcomes
   Map<String, dynamic> outcomeMeasures;
   ContactLocation contactsLocations;
+  PointOfContact contactInformation; //pointOfContact
 
   ClinicalTrialModel({
-
     required this.studyPlan,
     required this.outcomeMeasures,
     required this.contactsLocations,
+    required this.contactInformation,
     required super.nctId,
     required super.lastUpdated,
     required super.status,
@@ -39,4 +40,17 @@ class ContactLocation {
       required this.zip,
       required this.country,
       required this.geoPoint});
+}
+
+class PointOfContact {
+  String title;
+  String organization;
+  String email;
+  String phone;
+
+  PointOfContact(
+      {required this.title,
+      required this.organization,
+      required this.email,
+      required this.phone});
 }

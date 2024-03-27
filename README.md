@@ -4,11 +4,11 @@ This application aims to streamline the clinical trial process by leveraging the
 Additionally, through data preprocessing, the app aims to provide a clean dataset where keywords are stored for the training of Natural Language Processing algorithms.
 ## Technologies Used:
 
-- **Flutter/Dart:** The application is developed using the Flutter framework with Dart programming language, allowing for cross-platform development of mobile applications.
+- **Application:** The application is developed using the Flutter framework with Dart programming language, allowing for cross-platform development of mobile applications.
 
-- **ClinicalTrials.gov API:** This API provides access to a comprehensive database of clinical trials, enabling users to search for relevant studies based on various criteria such as condition, location, and intervention.
+- **Database:** PostgreSQL with AACT (Aggregate Analysis of ClinicalTrials.gov): Utilizing the publicly available relational database AACT, which contains all information (protocol and result data elements) about every study registered in ClinicalTrials.gov. Content is downloaded from ClinicalTrials.gov daily and loaded into AACT for streamlined access to comprehensive trial data.
 
-- **Postman:** Postman is utilized for testing and interacting with the ClinicalTrials.gov API endpoints during development to ensure proper integration and functionality.
+- **API Interaction:** Postman is utilized for testing and interacting with the AACT database endpoints during development to ensure proper integration and functionality.
 
 ## Sources:
 
