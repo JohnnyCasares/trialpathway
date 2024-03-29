@@ -2,7 +2,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:hti_trialpathway/services/database.dart';
-import 'package:postgres/postgres.dart';
 import '../widgets/my_appbar.dart';
 
 class PatientMain extends StatefulWidget {
@@ -17,10 +16,10 @@ class _PatientMainState extends State<PatientMain> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: const MyAppBar(),
-        body: FutureBuilder<Result>(
+        body: FutureBuilder(
             future: DatabaseQueries.getBriefStudies(),
             builder: (context, result) {
-              print(result.data?[0].length);
+              print(result.data);
               return BriefSummary();
             }));
 
@@ -32,6 +31,7 @@ class BriefSummary extends StatelessWidget {
   const BriefSummary({
     super.key,
   });
+
 
   @override
   Widget build(BuildContext context) {
