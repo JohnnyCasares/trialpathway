@@ -2,17 +2,20 @@ import 'package:flutter/material.dart';
 class CustomTextFormField extends StatefulWidget {
   const CustomTextFormField({
     super.key,
-    required this.hintText,
-    required this.controller,
+    this.hintText,
+    this.controller,
     this.helperText,
     this.validator,
-    this.isPassword = false,
+    this.textAlign = TextAlign.start,
+    this.isPassword = false, this.keyboardType,
   });
-  final String hintText;
-  final TextEditingController controller;
+  final String? hintText;
+  final TextEditingController? controller;
   final String? helperText;
+  final TextAlign textAlign;
   final String? Function(String?)? validator;
   final bool isPassword;
+  final TextInputType? keyboardType;
   @override
   State<CustomTextFormField> createState() => _CustomTextFormFieldState();
 }
@@ -30,6 +33,8 @@ class _CustomTextFormFieldState extends State<CustomTextFormField> {
     return Padding(
       padding: const EdgeInsets.all(10.0),
       child: TextFormField(
+        keyboardType: widget.keyboardType,
+        textAlign: widget.textAlign,
         validator: widget.validator ?? defaultValidator,
         controller: widget.controller,
         obscureText: visibility,
@@ -42,10 +47,11 @@ class _CustomTextFormFieldState extends State<CustomTextFormField> {
                 : null,
             helperMaxLines: 3,
             helperText: widget.helperText,
-            label: Text(widget.hintText),
+            label: widget.hintText!=null?Text(widget.hintText!):null,
             hintText: widget.hintText,
             border:
             OutlineInputBorder(borderRadius: BorderRadius.circular(16))),
+
       ),
     );
   }
