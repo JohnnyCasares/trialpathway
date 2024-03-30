@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:hti_trialpathway/main.dart';
 import 'package:hti_trialpathway/researcher/views/info.dart';
 import 'package:hti_trialpathway/researcher/views/messaging.dart';
 import 'package:hti_trialpathway/researcher/views/pathway.dart';
-import 'package:hti_trialpathway/services/database.dart';
 import 'package:hti_trialpathway/widgets/my_appbar.dart';
 
 class ResearchMain extends StatefulWidget {
@@ -21,12 +19,7 @@ class _ResearchMainState extends State<ResearchMain> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: MyAppBar(),
-      body: FutureBuilder(
-        future: getIt<DataBaseService>().initializeDatabase(),
-        builder: (context, snapshot) {
-          return views[pageIndex];
-        }
-      ),
+      body: views[pageIndex],
       bottomNavigationBar: bottomNavBar(),
     );
   }
