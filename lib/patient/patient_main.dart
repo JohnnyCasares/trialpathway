@@ -68,6 +68,7 @@ late TextEditingController pageNumberController;
                   ElevatedButton(onPressed: page!=0?(){
                     setState(() {
                       page--;
+                      pageNumberController.text = '$page';
                     });
                   }:null, child: const Text('Previous')),
                   SizedBox(
@@ -76,6 +77,7 @@ late TextEditingController pageNumberController;
                       ElevatedButton(onPressed: (){
                         setState(() {
                           page++;
+                          pageNumberController.text = '$page';
                         });},
                           child: const Text('Next'))
                 ],
