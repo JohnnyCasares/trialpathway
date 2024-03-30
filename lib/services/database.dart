@@ -33,7 +33,7 @@ class DatabaseQueries {
     'intervention_type'
   ];
   Future<List<Map>> getBriefStudies() async {
-    Sql sqlQuery = Sql("""
+    Sql briefStudy = Sql("""
     SELECT DISTINCT S.NCT_ID,
     S.LAST_UPDATE_SUBMITTED_DATE,
     S.OVERALL_STATUS,
@@ -52,10 +52,21 @@ class DatabaseQueries {
     LIMIT 10;
     """
     );
-    Result rows = await getIt<Connection>().execute(sqlQuery);
-    List<Map> result = [];
+    Sql conditions = Sql.named(
+      """
+      SELECT C.NAME
+      FROM CTGOV.CONDITIONS as C
+      WHERE NCT_ID = @nct_id
+      """
+    );
+    
+    Result briefStudyRows = await getIt<Connection>().execute(briefStudy);
+
+    List<Map<String, dynamic>> result = [];
     for (int i = 0; i < 10; i++) {
-      result.add(Map.fromIterables(columnsBriefStudy, rows[i]));
+      result.add(Map.fromIterables(columnsBriefStudy, briefStudyRows[i]));
+      Result studyConditions = await getIt<Connection>().execute(conditions, parameters: {'nct_id' : result[i]['nct_id']}); //get conditions of the study
+      result[i]['conditions'] = studyConditions;
     }
     return result;
   }

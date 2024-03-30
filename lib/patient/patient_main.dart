@@ -34,7 +34,9 @@ class _PatientMainState extends State<PatientMain> {
                             description: result.data![index]['description'],
                             city: result.data![index]['city'],
                             country: result.data![index]['country'],
-                            interventionType: result.data![index]['intervention_type']);
+                            interventionType: result.data![index]['intervention_type'],
+                          conditions: result.data![index]['conditions'],
+                        );
                       });
                 }
                 else{
@@ -63,7 +65,7 @@ class BriefSummary extends StatelessWidget {
     required this.startDateType,
     required this.description,
     required this.city, required this.country,
-    required this.interventionType,
+    required this.interventionType, this.conditions,
   });
   final String nctID;
   final DateTime? lastDateUpdate;
@@ -75,15 +77,16 @@ class BriefSummary extends StatelessWidget {
   final String city;
   final String country;
   final String interventionType;
+  final List? conditions;
 
   @override
   Widget build(BuildContext context) {
-
+    print(conditions);
     return Card(
       child: SizedBox(
         width: double.infinity,
         child: Padding(
-          padding: const EdgeInsets.all(8.0),
+          padding: const EdgeInsets.all(10.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
@@ -95,21 +98,30 @@ class BriefSummary extends StatelessWidget {
                   Text(nctID),
                 ],
               ),
-              Center(child: Text(title, textAlign: TextAlign.center,)),
+              Center(child: Text(title, textAlign: TextAlign.center, style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),)),
 
               Text('Type of intervention: $interventionType'),
-              SizedBox(
-                  height: 20,
-                  child: ListView(
-                    scrollDirection: Axis.horizontal,
-                    shrinkWrap: true,
-                    children: [
-                      Text('leukemia'),
-                      Text('another condition'),
-                      Text('chamo'),
-                      Text('test')
-                    ],
-                  )),
+              const Divider(),
+              if(conditions!=null)
+               Column(
+                 crossAxisAlignment: CrossAxisAlignment.start,
+                 children: [
+                   const Text('Conditions', style: TextStyle(fontWeight: FontWeight.bold),),
+                   Wrap(
+                       direction: Axis.horizontal,
+                       children: conditions!.map((item) {
+                         return Card(
+                             color: Colors.white70,
+                             child: Padding(
+                               padding: const EdgeInsets.all(3.0),
+                               child: Text(item[0]),
+                             ));
+                       }
+                       ).toList()
+                   ),
+                 ],
+               ),
+              const Divider(),
               Text('Location: $city, $country'),
             ],
           ),
