@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:hti_trialpathway/class_models/database_models/brief_summary.dart';
 import 'package:hti_trialpathway/services/database.dart';
 import 'package:hti_trialpathway/widgets/custom_textformfield.dart';
 import '../widgets/my_appbar.dart';
@@ -35,21 +36,13 @@ late TextEditingController pageNumberController;
                         return ListView.builder(
                             itemCount: result.data!.length,
                             itemBuilder: (context, index) {
-                              return BriefSummary(
-                                  nctID: result.data![index]['nct_id'],
-                                  lastDateUpdate: result.data![index]['last_date_update'],
-                                  status: result.data![index]['status'],
-                                  title: result.data![index]['title'],
-                                  startDate: result.data![index]['start_date'],
-                                  startDateType: result.data![index]['start_date_type'],
-                                  description: result.data![index]['description'],
-                                  locations: result.data![index]['locations'],
-                                  interventionType: result.data![index]['intervention_type'],
-                                conditions: result.data![index]['conditions'],
+                              return BriefSummaryCard(
+                                  briefSummary: result.data![index]
                               );
                             });
                       }
                       else{
+                        print("LINE 45: ${result.error}");
                         return const Center(child: Text('An error ocurred'),);
                       }
                     } else if(result.connectionState == ConnectionState.waiting) {
@@ -90,29 +83,12 @@ late TextEditingController pageNumberController;
   }
 }
 
-class BriefSummary extends StatelessWidget {
-  const BriefSummary({
+class BriefSummaryCard extends StatelessWidget {
+  const BriefSummaryCard({
     super.key,
-    required this.nctID,
-    required this.lastDateUpdate,
-    required this.status,
-    required this.title,
-    required this.startDate,
-    required this.startDateType,
-    required this.description,
-    required this.locations,
-    required this.interventionType, this.conditions,
+   required this.briefSummary
   });
-  final String nctID;
-  final DateTime? lastDateUpdate;
-  final String status;
-  final String title;
-  final DateTime? startDate;
-  final String? startDateType;
-  final String description;
-  final List locations;
-  final List interventionType;
-  final List? conditions;
+  final BriefSummary briefSummary;
 
   @override
   Widget build(BuildContext context) {
@@ -130,19 +106,19 @@ class BriefSummary extends StatelessWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(status, textAlign: TextAlign.left,),//TODO show color based on teh status
-                    Text(nctID),
+                    Text(briefSummary.status, textAlign: TextAlign.left,),//TODO show color based on teh status
+                    Text(briefSummary.nctID),
                   ],
                 ),
-                Center(child: Text(title, textAlign: TextAlign.center, style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),)),
-                Text(description),
-                if(interventionType.isNotEmpty)
+                Center(child: Text(briefSummary.title, textAlign: TextAlign.center, style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),)),
+                Text(briefSummary.description),
+                if(briefSummary.interventionType!=null && briefSummary.interventionType!.isNotEmpty)
                   Row(
                     children: [
                       const Text('Type of intervention:\t'),
                       Wrap(
                           direction: Axis.horizontal,
-                          children: interventionType.map((intervention)
+                          children: briefSummary.interventionType!.map((intervention)
                           => Text(intervention[0])
                           ).toList()
                       ),
@@ -150,14 +126,14 @@ class BriefSummary extends StatelessWidget {
                   ),
 
                 const Divider(),
-                if(conditions!=null)
+                if(briefSummary.conditions!=null)
                  Column(
                    crossAxisAlignment: CrossAxisAlignment.start,
                    children: [
                      const Text('Conditions', style: TextStyle(fontWeight: FontWeight.bold),),
                      Wrap(
                          direction: Axis.horizontal,
-                         children: conditions!.map((item)
+                         children: briefSummary.conditions!.map((item)
                            => Card(
                                color: Colors.white70,
                                child: Padding(
