@@ -23,7 +23,7 @@ Additionally, through data preprocessing, the app aims to provide a clean datase
 ## How to Use:
 1. **Clone Repository:**
    ```
-   git clone https://github.com/your_username/clinical_trial_streamlining_app.git
+   git clone https://github.com/JohnnyCasares/clinical_trial_streamlining_app.git
    cd clinical_trial_streamlining_app
    ```
 2. **Install Dependencies:**
