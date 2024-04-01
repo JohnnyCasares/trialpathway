@@ -21,13 +21,11 @@ Additionally, through data preprocessing, the app aims to provide a clean datase
 - [ScienceDirect Article](https://www.sciencedirect.com/science/article/pii/S2451865421001307): Provides insights into the use of technology and AI in optimizing clinical trial processes.
 
 ## How to Use:
-
 1. **Clone Repository:**
    ```
    git clone https://github.com/your_username/clinical_trial_streamlining_app.git
    cd clinical_trial_streamlining_app
    ```
-
 2. **Install Dependencies:**
    ```
    flutter pub get
@@ -44,6 +42,19 @@ Additionally, through data preprocessing, the app aims to provide a clean datase
     - Communicate with trial contacts or site personnel directly through the app.
     - Monitor and track the progress of clinical trials.
     - Provide feedback or report issues encountered during the trial process.
+
+## Important: Accessing the Database
+
+To run this project, it's crucial to have access to the AACT (Aggregate Analysis of ClinicalTrials.gov) database. Follow the steps below:
+
+1. **Create an Account:** Visit [AACT](https://aact.ctti-clinicaltrials.org) and create an account if you haven't already done so.
+
+2. **Obtain Credentials:** After creating your account, you'll receive credentials for accessing the database.
+
+3. **Enter Credentials:** Once you have your credentials, enter them into the app to gain access to the database.
+
+It's essential to complete these steps to ensure the app can retrieve comprehensive trial data directly from AACT for use in the application.
+
 
 ## Contributing:
 

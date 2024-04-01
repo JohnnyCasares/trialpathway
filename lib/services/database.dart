@@ -1,7 +1,6 @@
 import 'dart:convert';
 
 import 'package:hti_trialpathway/class_models/database_models/brief_summary.dart';
-import 'package:hti_trialpathway/services/database_queries/queries.dart';
 
 import 'package:postgres/postgres.dart';
 
@@ -36,10 +35,11 @@ class DatabaseQueries {
       }
       return briefSummaries;
     } else {
-      Sql briefStudy = MyQueries().getBriefStudy(offset);
-      Sql conditions = MyQueries().conditions;
-      Sql locations = MyQueries().locations;
-      Sql interventions = MyQueries().interventions;
+      BriefSummaryQueries query = BriefSummaryQueries();
+      Sql briefStudy = query.getBriefStudy(offset);
+      Sql conditions = query.conditions;
+      Sql locations = query.locations;
+      Sql interventions = query.interventions;
 
       Result briefStudyRows = await getIt<Connection>().execute(briefStudy);
 
