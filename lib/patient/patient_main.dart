@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:hti_trialpathway/class_models/database_models/brief_summary.dart';
 import 'package:hti_trialpathway/services/database.dart';
+import 'package:hti_trialpathway/services/file_storage.dart';
 import 'package:hti_trialpathway/widgets/custom_textformfield.dart';
 import '../widgets/my_appbar.dart';
 
@@ -16,6 +17,12 @@ class PatientMain extends StatefulWidget {
 class _PatientMainState extends State<PatientMain> {
   int page = 0;
 late TextEditingController pageNumberController;
+Future refresh(int page) async{
+  setState(() {
+    FileStorageService().delete('$page');
+  });
+}
+
 @override
   void initState() {
     pageNumberController = TextEditingController(text: '$page');
@@ -33,13 +40,18 @@ late TextEditingController pageNumberController;
                   builder: (context, result) {
                     if(result.connectionState == ConnectionState.done) {
                       if (result.hasData) {
-                        return ListView.builder(
-                            itemCount: result.data!.length,
-                            itemBuilder: (context, index) {
-                              return BriefSummaryCard(
-                                  briefSummary: result.data![index]
-                              );
-                            });
+                        return RefreshIndicator(
+                          onRefresh: () async{
+                            refresh(page);
+                          },
+                          child: ListView.builder(
+                              itemCount: result.data!.length,
+                              itemBuilder: (context, index) {
+                                return BriefSummaryCard(
+                                    briefSummary: result.data![index]
+                                );
+                              }),
+                        );
                       }
                       else{
                         return const Center(child: Text('An error occurred'),);

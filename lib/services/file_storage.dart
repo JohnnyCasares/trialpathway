@@ -30,4 +30,10 @@ class FileStorageService {
     }
 
   }
+
+  Future<void> delete(String fileName) async{
+    final path = await _localPath;
+    final File file = File('$path/$fileName.json');
+    file.delete();
+  }
 }
