@@ -2,6 +2,20 @@ import 'package:json_annotation/json_annotation.dart';
 part 'brief_summary.g.dart';
 @JsonSerializable()
 class BriefSummary {
+
+  static final List<String> columns = [
+    'nctID',
+    'lastDateUpdate',
+    'status',
+    'title',
+    'startDate',
+    'startDateType',
+    'description',
+    'locations',
+    'interventionType',
+    'conditions'
+  ];
+
   final String nctID;
 
   final DateTime? lastDateUpdate;

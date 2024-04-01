@@ -42,8 +42,7 @@ late TextEditingController pageNumberController;
                             });
                       }
                       else{
-                        print("LINE 45: ${result.error}");
-                        return const Center(child: Text('An error ocurred'),);
+                        return const Center(child: Text('An error occurred'),);
                       }
                     } else if(result.connectionState == ConnectionState.waiting) {
                       return const Center(
