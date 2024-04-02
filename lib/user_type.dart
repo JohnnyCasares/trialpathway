@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:hti_trialpathway/patient/patient_main.dart';
+import 'package:hti_trialpathway/patient/search/search_main.dart';
 import 'package:hti_trialpathway/researcher/login_research.dart';
 import 'package:hti_trialpathway/widgets/my_appbar.dart';
 
@@ -20,7 +20,7 @@ class Login extends StatelessWidget {
               Navigator.of(context).push(MaterialPageRoute(builder: (_)=>ResearchLogin()));
             }, child: Text('Researcher')),
             ElevatedButton(onPressed: (){
-              Navigator.of(context).push(MaterialPageRoute(builder: (_)=>PatientMain()));
+              Navigator.of(context).push(MaterialPageRoute(builder: (_)=>SearchMain()));
             }, child: Text('Patient')),
           ],
                 ),

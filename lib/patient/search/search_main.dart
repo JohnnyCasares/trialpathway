@@ -1,0 +1,41 @@
+import 'package:flutter/material.dart';
+import 'package:hti_trialpathway/patient/search/patient_search.dart';
+
+import '../../widgets/my_appbar.dart';
+
+class SearchMain extends StatefulWidget {
+  const SearchMain({super.key});
+
+  @override
+  State<SearchMain> createState() => _SearchMainState();
+}
+
+class _SearchMainState extends State<SearchMain> {
+  int pageIndex = 0;
+  List<Widget> views = [PatientSearch(), Text('Profile')];
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: const MyAppBar(),
+      body: views[pageIndex],
+      bottomNavigationBar: bottomNavBar(),
+    );
+  }
+
+  BottomNavigationBar bottomNavBar() {
+    return BottomNavigationBar(
+      currentIndex: pageIndex,
+      onTap: (int index){
+        setState(() {
+          pageIndex = index;
+        });
+      },
+      items: const [
+        BottomNavigationBarItem(icon: Icon(Icons.search_outlined), label: 'Search'),
+        BottomNavigationBarItem(icon: Icon(Icons.person_outline), label: 'Profile'),
+
+      ],
+    );
+  }
+}

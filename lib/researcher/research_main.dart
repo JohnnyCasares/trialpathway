@@ -18,7 +18,7 @@ class _ResearchMainState extends State<ResearchMain> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: MyAppBar(),
+      appBar: const MyAppBar(),
       body: views[pageIndex],
       bottomNavigationBar: bottomNavBar(),
     );

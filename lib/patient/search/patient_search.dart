@@ -5,16 +5,15 @@ import 'package:hti_trialpathway/class_models/database_models/brief_summary.dart
 import 'package:hti_trialpathway/services/database.dart';
 import 'package:hti_trialpathway/services/file_storage.dart';
 import 'package:hti_trialpathway/widgets/custom_textformfield.dart';
-import '../widgets/my_appbar.dart';
 
-class PatientMain extends StatefulWidget {
-  const PatientMain({super.key});
+class PatientSearch extends StatefulWidget {
+  const PatientSearch({super.key});
 
   @override
-  State<PatientMain> createState() => _PatientMainState();
+  State<PatientSearch> createState() => _PatientSearchState();
 }
 
-class _PatientMainState extends State<PatientMain> {
+class _PatientSearchState extends State<PatientSearch> {
   int page = 0;
 late TextEditingController pageNumberController;
 Future refresh(int page) async{
@@ -30,9 +29,7 @@ Future refresh(int page) async{
   }
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        appBar: const MyAppBar(),
-        body: Column(
+    return Column(
           children: [
             Expanded(
               child: FutureBuilder(
@@ -88,7 +85,7 @@ Future refresh(int page) async{
               ),
             ),
           ],
-        ));
+        );
 
     // bottomNavigationBar: bottomNavBar(),
   }
