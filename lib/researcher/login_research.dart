@@ -29,11 +29,11 @@ class _ResearchLoginState extends State<ResearchLogin> {
       appBar: AppBar(
         title: Text('Protocol Regstration and Results System'),
       ),
-      body: SingleChildScrollView(
-        physics: const ClampingScrollPhysics(),
-        child: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Center(
+      body: Center(
+        child: SingleChildScrollView(
+          physics: const ClampingScrollPhysics(),
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
             child: Form(
               onChanged: () {
                 if (_formKey.currentState!.validate()) {

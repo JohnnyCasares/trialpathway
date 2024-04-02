@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:hti_trialpathway/patient/search/patient_search.dart';
+import 'package:hti_trialpathway/patient/new_patient/profile.dart';
+import 'package:hti_trialpathway/patient/new_patient/search.dart';
 
 import '../../widgets/my_appbar.dart';
 
@@ -12,7 +13,7 @@ class SearchMain extends StatefulWidget {
 
 class _SearchMainState extends State<SearchMain> {
   int pageIndex = 0;
-  List<Widget> views = [PatientSearch(), Text('Profile')];
+  List<Widget> views = [PatientSearch(), Profile()];
 
   @override
   Widget build(BuildContext context) {

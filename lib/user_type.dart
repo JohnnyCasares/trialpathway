@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:hti_trialpathway/patient/search/search_main.dart';
+import 'package:hti_trialpathway/patient/new_patient/new_patient_main.dart';
 import 'package:hti_trialpathway/researcher/login_research.dart';
 import 'package:hti_trialpathway/widgets/my_appbar.dart';
 
