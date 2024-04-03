@@ -5,7 +5,6 @@ import 'package:path_provider/path_provider.dart';
 class FileStorageService {
   Future<String> get _localPath async {
     final directory = await getApplicationCacheDirectory();
-    print(directory.absolute);
     return directory.path;
   }
 

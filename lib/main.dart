@@ -5,10 +5,13 @@ import 'package:hti_trialpathway/theme/color_schemes.g.dart';
 import 'package:hti_trialpathway/user_type.dart';
 import 'package:postgres/postgres.dart';
 
+import 'class_models/patient.dart';
+
 GetIt getIt = GetIt.instance;
 
 void main() async{
   getIt.registerSingletonAsync<Connection>(()async => await DataBaseService().initializeDatabase());
+  getIt.registerSingleton<Patient>(Patient.generateMockPatient());
   runApp(const MyApp());
 }
 

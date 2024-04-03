@@ -27,7 +27,8 @@ class _ResearchLoginState extends State<ResearchLogin> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Protocol Regstration and Results System'),
+        title: const Text('Researcher Login'),
+        centerTitle: true,
       ),
       body: Center(
         child: SingleChildScrollView(
@@ -52,6 +53,8 @@ class _ResearchLoginState extends State<ResearchLogin> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
+                    const Text('This login page intents to use the Protocol Registration and Results System'),
+                    const SizedBox(height: 20,),
                     CustomTextFormField(
                       hintText: 'Organization',
                       controller: organizationController,

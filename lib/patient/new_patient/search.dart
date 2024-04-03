@@ -14,11 +14,11 @@ class PatientSearch extends StatefulWidget {
 }
 
 class _PatientSearchState extends State<PatientSearch> {
-  int page = 0;
+  int page = 1;
   late TextEditingController pageNumberController;
   Future refresh(int page) async {
     setState(() {
-      FileStorageService().delete('$page');
+      FileStorageService().delete('${page-1}');
     });
   }
 
@@ -35,7 +35,7 @@ class _PatientSearchState extends State<PatientSearch> {
         pageController(),
         Expanded(
           child: FutureBuilder(
-              future: DatabaseQueries().getBriefStudies(page),
+              future: DatabaseQueries().getBriefStudies(page-1),
               builder: (context, result) {
                 if (result.connectionState == ConnectionState.done) {
                   if (result.hasData) {
@@ -82,7 +82,7 @@ class _PatientSearchState extends State<PatientSearch> {
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
           ElevatedButton(
-              onPressed: page != 0
+              onPressed: page != 1
                   ? () {
                       setState(() {
                         page--;
