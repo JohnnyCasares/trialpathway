@@ -48,8 +48,7 @@ class BriefSummary {
 }
 
 class BriefSummaryQueries{
-  Sql getBriefStudy(int offset){
-    return Sql("""
+  Sql getBriefStudy= Sql.named("""
     SELECT DISTINCT S.NCT_ID,
     S.LAST_UPDATE_SUBMITTED_DATE,
     S.OVERALL_STATUS,
@@ -59,13 +58,16 @@ class BriefSummaryQueries{
     B.DESCRIPTION
     FROM CTGOV.STUDIES AS S
     INNER JOIN CTGOV.BRIEF_SUMMARIES AS B ON S.NCT_ID = B.NCT_ID
-    WHERE S.OVERALL_STATUS IN ('Recruiting', 'Not yet recruiting' )
+    WHERE S.NCT_ID IN(SELECT DISTINCT F.NCT_ID
+    FROM CTGOV.FACILITIES as F
+    WHERE F.COUNTRY IN(@country_list))
+    AND S.OVERALL_STATUS IN ('Recruiting', 'Not yet recruiting' )
     ORDER BY S.LAST_UPDATE_SUBMITTED_DATE DESC
     LIMIT 10
-    OFFSET $offset;
+    OFFSET @offset;
     """
     );
-  }
+
 
   Sql conditions = Sql.named(
       """

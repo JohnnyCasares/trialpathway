@@ -46,85 +46,91 @@ class _ProfileState extends State<Profile> {
       padding: const EdgeInsets.all(10.0),
       child: SingleChildScrollView(
         physics: const ClampingScrollPhysics(),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            //personal info: name, age, sex
-            const Text(
-              'Personal Information',
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-            ),
-            ProfileTile(
-                title: 'Name',
-                field: CustomTextFormField(
-                  hintText: 'Enter your full name',
-                  controller: name,
-                )),
-            ProfileTile(
-                title: 'Age',
-                field: CustomTextFormField(
-                  hintText: 'Enter your age',
-                  controller: age,
-                )),
-            ProfileTile(
-              title: 'Sex',
-              field: Row(
-                children: <Widget>[
-                  Radio(
-                    value: Sex.male,
-                    groupValue: _selectedSex,
-                    onChanged: (value) {
-                      setState(() {
-                        _selectedSex = value as Sex;
-                      });
-                    },
+        child: Center(
+          child: SizedBox(
+            width: 600,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                //personal info: name, age, sex
+                const Text(
+                  'Personal Information',
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                ),
+                ProfileTile(
+                    title: 'Name',
+                    field: CustomTextFormField(
+
+                      controller: name,
+                    )),
+                ProfileTile(
+                    title: 'Age',
+                    field: CustomTextFormField(
+
+                      controller: age,
+                    )),
+                ProfileTile(
+                  title: 'Sex',
+                  field: Row(
+                    children: <Widget>[
+                      Radio(
+                        value: Sex.male,
+                        groupValue: _selectedSex,
+                        onChanged: (value) {
+                          setState(() {
+                            _selectedSex = value as Sex;
+                          });
+                        },
+                      ),
+                      const Text('Male'),
+                      Radio(
+                        value: Sex.female,
+                        groupValue: _selectedSex,
+                        onChanged: (value) {
+                          setState(() {
+                            _selectedSex = value as Sex;
+                          });
+                        },
+                      ),
+                      const Text('Female'),
+                    ],
                   ),
-                  Text('Male'),
-                  Radio(
-                    value: Sex.female,
-                    groupValue: _selectedSex,
-                    onChanged: (value) {
-                      setState(() {
-                        _selectedSex = value as Sex;
-                      });
-                    },
-                  ),
-                  Text('Female'),
-                ],
-              ),
+                ),
+                ProfileTile(
+                    title: 'Country',
+                    field: CustomTextFormField(
+
+                      controller: country,
+                    )),
+                ProfileTile(
+                    title: 'State',
+                    field: CustomTextFormField(
+
+                      controller: state,
+                    )),
+                //clinical info: health? conditions, pregnancy,
+                const Text('Clinical and Medical Information',
+                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+                CheckboxListTile(
+                    title: const Text('Healthy'),
+                    value: healthy,
+                    onChanged: (val) {}),
+                ProfileTile(
+                    title: 'Conditions',
+                    field: CustomTextFormField(
+                      hintText: 'Choose any condition or illness you may have',
+                      controller: conditions,
+                    )),
+                //only show if women
+                if (_selectedSex == Sex.female)
+                  CheckboxListTile(
+                      title: const Text('Pregnant'),
+                      value: pregnant,
+                      onChanged: (val) {}),
+              ],
             ),
-            ProfileTile(
-                title: 'Country',
-                field: CustomTextFormField(
-                  hintText: 'Enter your country',
-                  controller: country,
-                )),
-            ProfileTile(
-                title: 'State',
-                field: CustomTextFormField(
-                  hintText: 'ex. California',
-                  controller: state,
-                )),
-            //clinical info: health? conditions, pregnancy,
-            const Text('Clinical and Medical Information',
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-            CheckboxListTile(
-                title: const Text('Healthy'),
-                value: healthy,
-                onChanged: (val) {}),
-            ProfileTile(
-                title: 'Conditions',
-                field: CustomTextFormField(
-                  hintText: 'Choose any condition or illness you may have',
-                  controller: conditions,
-                )),
-            //only show if women
-            if (_selectedSex == Sex.female)
-              CheckboxListTile(
-                  title: const Text('Pregnant'),
-                  value: pregnant,
-                  onChanged: (val) {}),
-          ],
+          ),
         ),
       ),
     );

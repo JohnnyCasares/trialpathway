@@ -18,7 +18,7 @@ class _PatientSearchState extends State<PatientSearch> {
   late TextEditingController pageNumberController;
   Future refresh(int page) async {
     setState(() {
-      FileStorageService().delete('${page-1}');
+      FileStorageService().delete('${page - 1}');
     });
   }
 
@@ -30,50 +30,70 @@ class _PatientSearchState extends State<PatientSearch> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        pageController(),
-        Expanded(
-          child: FutureBuilder(
-              future: DatabaseQueries().getBriefStudies(page-1),
-              builder: (context, result) {
-                if (result.connectionState == ConnectionState.done) {
-                  if (result.hasData) {
-                    return RefreshIndicator(
-                      onRefresh: () async {
-                        refresh(page);
-                      },
-                      child: ListView.builder(
-                          itemCount: result.data!.length,
-                          itemBuilder: (context, index) {
-                            return BriefSummaryCard(
-                                briefSummary: result.data![index]);
-                          }),
-                    );
-                  } else {
-                    return const Center(
-                      child: Text('An error occurred'),
-                    );
-                  }
-                } else if (result.connectionState == ConnectionState.waiting) {
-                  return const Center(
-                    child: Center(
-                      child: CircularProgressIndicator(),
-                    ),
-                  );
-                } else {
-                  return const Center(
-                    child: Text('Check your internet connection'),
-                  );
-                }
-              }),
-        ),
+    List<Widget> listOfStudies = [];
+    return FutureBuilder(
+        future: DatabaseQueries().getBriefStudies(page-1),
+        builder: (context, result) {
+          if (result.connectionState == ConnectionState.done) {
+            listOfStudies.add(filters());
+            if (result.hasData) {
+              listOfStudies.addAll(
+                  result.data!.map((e) => BriefSummaryCard(briefSummary: e)));
+              listOfStudies.add(pageController());
+              return RefreshIndicator(
+                  onRefresh: () async {
+                    refresh(page);
+                  },
+                  child: ListView(
+                    children: listOfStudies,
+                  ));
+            } else {
+              print(result.error.toString());
+              return  Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
 
-      ],
-    );
+                  children: [
+                    Text('An error occurred'),
+                    refreshButton()
+                  ],
+                ),
+              );
+            }
+          } else if (result.connectionState == ConnectionState.waiting) {
+            return const Center(
+              child: Center(
+                child: CircularProgressIndicator(),
+              ),
+            );
+          } else {
+            return Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text('Check your internet connection'),
+                  refreshButton()
+                ],
+              ),
+            );
+          }
+        });
 
     // bottomNavigationBar: bottomNavBar(),
   }
+
+  Widget filters() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children: [
+        Chip(label: Text('Lemao')),Chip(label: Text('Lemao')),Chip(label: Text('Lemao')),Chip(label: Text('Lemao')),Chip(label: Text('Lemao')),
+        refreshButton()
+      ],
+    );
+
+  }
+
+  IconButton refreshButton() => IconButton(onPressed: ()async{refresh(page);}, icon: const Icon(Icons.refresh));
 
   Container pageController() {
     return Container(
@@ -149,14 +169,19 @@ class BriefSummaryCard extends StatelessWidget {
                 Text(briefSummary.description),
                 if (briefSummary.interventionType != null &&
                     briefSummary.interventionType!.isNotEmpty)
-                  Row(
+                  Column(
                     children: [
-                      const Text('Type of intervention:\t'),
-                      Wrap(
-                          direction: Axis.horizontal,
-                          children: briefSummary.interventionType!
-                              .map((intervention) => Text(intervention[0]))
-                              .toList()),
+                      const Divider(),
+                      Row(
+                        children: [
+                          const Text('Type of intervention:\t', style: TextStyle(fontWeight: FontWeight.bold),),
+                          Wrap(
+                              direction: Axis.horizontal,
+                              children: briefSummary.interventionType!
+                                  .map((intervention) => Text(intervention[0]))
+                                  .toList()),
+                        ],
+                      ),
                     ],
                   ),
 
@@ -167,16 +192,22 @@ class BriefSummaryCard extends StatelessWidget {
                     children: [
                       const Text(
                         'Conditions',
-                        style: TextStyle(fontWeight: FontWeight.bold, ),
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                       Wrap(
                           direction: Axis.horizontal,
                           children: briefSummary.conditions!
                               .map((item) => Card(
-                                  color: Theme.of(context).colorScheme.primaryContainer,
+                                  color: Theme.of(context)
+                                      .colorScheme
+                                      .primaryContainer,
                                   child: Padding(
                                     padding: const EdgeInsets.all(3.0),
-                                    child: Text(item[0],),
+                                    child: Text(
+                                      item[0],
+                                    ),
                                   )))
                               .toList()),
                     ],

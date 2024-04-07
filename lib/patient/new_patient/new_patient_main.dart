@@ -18,9 +18,10 @@ class _SearchMainState extends State<SearchMain> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const MyAppBar(),
+      appBar:  const MyAppBar(),
       body: views[pageIndex],
       bottomNavigationBar: bottomNavBar(),
+
     );
   }
 

@@ -4,6 +4,7 @@ import 'package:hti_trialpathway/class_models/database_models/brief_summary.dart
 
 import 'package:postgres/postgres.dart';
 
+import '../class_models/patient.dart';
 import '../main.dart';
 import 'file_storage.dart';
 
@@ -25,6 +26,7 @@ class DataBaseService {
 }
 
 class DatabaseQueries {
+
   Future<List<BriefSummary>> getBriefStudies(int offset) async {
     String file = await FileStorageService().readFile(fileName: '$offset');
     if (file.isNotEmpty) {
@@ -36,12 +38,12 @@ class DatabaseQueries {
       return briefSummaries;
     } else {
       BriefSummaryQueries query = BriefSummaryQueries();
-      Sql briefStudy = query.getBriefStudy(offset);
+      Sql briefStudy = query.getBriefStudy;
       Sql conditions = query.conditions;
       Sql locations = query.locations;
       Sql interventions = query.interventions;
 
-      Result briefStudyRows = await getIt<Connection>().execute(briefStudy);
+      Result briefStudyRows = await getIt<Connection>().execute(briefStudy, parameters: {'offset':offset, 'country_list':getIt<Patient>().country});
 
       List<BriefSummary> result = [];
       for (int i = 0; i < 10; i++) {
@@ -62,7 +64,7 @@ class DatabaseQueries {
             }); //get conditions of the study
         result[i].locations = await getIt<Connection>().execute(locations,
             parameters: {
-              'nct_id': result[i].nctID
+              'nct_id': result[i].nctID,
             }); //get locations of the study
         result[i].interventionType = await getIt<Connection>()
             .execute(interventions, parameters: {

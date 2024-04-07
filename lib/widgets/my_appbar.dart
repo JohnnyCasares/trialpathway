@@ -1,19 +1,20 @@
 import 'package:flutter/material.dart';
 
 class MyAppBar extends StatelessWidget implements PreferredSizeWidget {
-  const MyAppBar({super.key});
-
+  const MyAppBar({super.key, this.actions});
+  final List<Widget>? actions;
   @override
   Widget build(BuildContext context) {
     return AppBar(
 
-      title: Text('Trial Pathway'),
+      title: const Text('Trial Pathway'),
       centerTitle: true,
+      actions: actions,
 
     );
   }
 
   @override
-  // TODO: implement preferredSize
+
   Size get preferredSize => const Size.fromHeight(50);
 }
