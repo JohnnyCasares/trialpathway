@@ -28,7 +28,7 @@ class DataBaseService {
 class DatabaseQueries {
 
   Future<List<BriefSummary>> getBriefStudies(int offset) async {
-    String file = await FileStorageService().readFile(fileName: '$offset');
+    String file = await FileStorageService().readFile(fileName: '$offset', format: 'json');
     if (file.isNotEmpty) {
       final jsonFile = jsonDecode(file);
       List<BriefSummary> briefSummaries = [];

@@ -19,10 +19,10 @@ class FileStorageService {
     return file.writeAsString(content);
   }
 
-  Future<String> readFile({required String fileName, String? content}) async {
+  Future<String> readFile({required String fileName, String? content, required String format, String? customPath}) async {
     try {
-      final path = await _localPath;
-      final File file = File('$path/$fileName.json');
+      final path = customPath ?? await _localPath;
+      final File file = File('$path/$fileName.$format');
       return await file.readAsString();
     } catch (e){
       return '';
@@ -30,9 +30,9 @@ class FileStorageService {
 
   }
 
-  Future<void> delete(String fileName) async{
-    final path = await _localPath;
-    final File file = File('$path/$fileName.json');
+  Future<void> delete(String fileName, {required String format,String? customPath}) async{
+    final path = customPath?? await _localPath;
+    final File file = File('$path/$fileName.$format');
     file.delete();
   }
 }

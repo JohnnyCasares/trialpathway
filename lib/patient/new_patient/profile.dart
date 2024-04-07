@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:hti_trialpathway/class_models/patient.dart';
 import 'package:hti_trialpathway/main.dart';
 import 'package:hti_trialpathway/widgets/custom_textformfield.dart';
+import '../../class_models/database_models/general_data.dart';
 
 class Profile extends StatefulWidget {
   const Profile({super.key});
@@ -21,6 +22,7 @@ class _ProfileState extends State<Profile> {
   late bool healthy;
   late TextEditingController conditions;
   bool pregnant = false;
+  GeneralData generalData = GeneralData();
   @override
   void initState() {
     name = TextEditingController(text: patient.name);
@@ -99,10 +101,15 @@ class _ProfileState extends State<Profile> {
                 ),
                 ProfileTile(
                     title: 'Country',
+                    onTap: () {
+                      generalData.countriesDialog(context);
+                    },
                     field: CustomTextFormField(
 
                       controller: country,
+
                     )),
+                if(country.text == 'United States')
                 ProfileTile(
                     title: 'State',
                     field: CustomTextFormField(
@@ -118,6 +125,10 @@ class _ProfileState extends State<Profile> {
                     onChanged: (val) {}),
                 ProfileTile(
                     title: 'Conditions',
+                  onTap: () {
+
+                    generalData.conditionsDialog(context);
+                  },
                     field: CustomTextFormField(
                       hintText: 'Choose any condition or illness you may have',
                       controller: conditions,
@@ -135,15 +146,18 @@ class _ProfileState extends State<Profile> {
       ),
     );
   }
+
 }
 
 class ProfileTile extends StatelessWidget {
-  const ProfileTile({super.key, required this.title, required this.field});
+  const ProfileTile({super.key, required this.title, required this.field, this.onTap});
   final String title;
   final Widget field;
+final Function()? onTap;
   @override
   Widget build(BuildContext context) {
     return ListTile(
-        leading: SizedBox(width: 60, child: Text(title)), title: field);
+        leading: SizedBox(width: 60, child: Text(title)), title: field,
+    onTap: onTap,);
   }
 }

@@ -18,7 +18,12 @@ class _PatientSearchState extends State<PatientSearch> {
   late TextEditingController pageNumberController;
   Future refresh(int page) async {
     setState(() {
-      FileStorageService().delete('${page - 1}');
+
+      try {
+        FileStorageService().delete('${page - 1}', format: 'json');
+      } on Exception catch (e) {
+        print(e);
+      }
     });
   }
 
@@ -31,103 +36,129 @@ class _PatientSearchState extends State<PatientSearch> {
   @override
   Widget build(BuildContext context) {
     List<Widget> listOfStudies = [];
-    return FutureBuilder(
-        future: DatabaseQueries().getBriefStudies(page-1),
-        builder: (context, result) {
-          if (result.connectionState == ConnectionState.done) {
-            listOfStudies.add(filters());
-            if (result.hasData) {
-              listOfStudies.addAll(
-                  result.data!.map((e) => BriefSummaryCard(briefSummary: e)));
-              listOfStudies.add(pageController());
-              return RefreshIndicator(
-                  onRefresh: () async {
-                    refresh(page);
-                  },
-                  child: ListView(
-                    children: listOfStudies,
-                  ));
+    return Scaffold(
+      appBar: AppBar(actions: [refreshButton()],),
+      drawer:Drawer(
+        child: Column(
+          children: [
+            Text('TEST'),
+            Text('TEST'),
+            Text('TEST'),
+            Text('TEST'),
+            Text('TEST'),
+          ],
+        ),
+      ) ,
+      body: FutureBuilder(
+          future: DatabaseQueries().getBriefStudies(page-1),
+          builder: (context, result) {
+            if (result.connectionState == ConnectionState.done) {
+
+              if (result.hasData) {
+                listOfStudies.addAll(
+                    result.data!.map((e) => BriefSummaryCard(briefSummary: e)));
+                listOfStudies.add(pageController());
+                return RefreshIndicator(
+                    onRefresh: () async {
+                      refresh(page);
+                    },
+                    child: ListView(
+                      children: listOfStudies,
+                    ));
+              } else {
+                print(result.error.toString());
+                return  Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+
+                    children: [
+                      Text('An error occurred'),
+                      refreshButton()
+                    ],
+                  ),
+                );
+              }
+            } else if (result.connectionState == ConnectionState.waiting) {
+              return const Center(
+                child: Center(
+                  child: CircularProgressIndicator(),
+                ),
+              );
             } else {
-              print(result.error.toString());
-              return  Center(
+              return Center(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
-
                   children: [
-                    Text('An error occurred'),
+                    Text('Check your internet connection'),
                     refreshButton()
                   ],
                 ),
               );
             }
-          } else if (result.connectionState == ConnectionState.waiting) {
-            return const Center(
-              child: Center(
-                child: CircularProgressIndicator(),
-              ),
-            );
-          } else {
-            return Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text('Check your internet connection'),
-                  refreshButton()
-                ],
-              ),
-            );
-          }
-        });
+          }),
+    );
 
     // bottomNavigationBar: bottomNavBar(),
   }
 
   Widget filters() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      children: [
-        Chip(label: Text('Lemao')),Chip(label: Text('Lemao')),Chip(label: Text('Lemao')),Chip(label: Text('Lemao')),Chip(label: Text('Lemao')),
-        refreshButton()
-      ],
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          IconButton(onPressed: (){
+            const Drawer(
+              child: Column(
+                children: [
+                  Text('TEST'),
+                  Text('TEST'),
+                  Text('TEST'),
+                  Text('TEST'),
+                  Text('TEST'),
+                ],
+              ),
+            );
+          }, icon: const Icon(Icons.menu)),
+          refreshButton()
+        ],
+      ),
     );
 
   }
 
   IconButton refreshButton() => IconButton(onPressed: ()async{refresh(page);}, icon: const Icon(Icons.refresh));
 
-  Container pageController() {
-    return Container(
-      color: Theme.of(context).colorScheme.tertiaryContainer,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: [
-          ElevatedButton(
-              onPressed: page != 1
-                  ? () {
-                      setState(() {
-                        page--;
-                        pageNumberController.text = '$page';
-                      });
-                    }
-                  : null,
-              child: const Text('Previous')),
-          SizedBox(
-              width: 100,
-              child: CustomTextFormField(
-                controller: pageNumberController,
-                textAlign: TextAlign.center,
-                keyboardType: TextInputType.number,
-              )),
-          ElevatedButton(
-              onPressed: () {
-                setState(() {
-                  page++;
-                  pageNumberController.text = '$page';
-                });
-              },
-              child: const Text('Next'))
-        ],
-      ),
+  Widget pageController() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children: [
+        ElevatedButton(
+            onPressed: page != 1
+                ? () {
+                    setState(() {
+                      page--;
+                      pageNumberController.text = '$page';
+                    });
+                  }
+                : null,
+            child: const Text('Previous')),
+        SizedBox(
+            width: 100,
+            child: CustomTextFormField(
+              controller: pageNumberController,
+              textAlign: TextAlign.center,
+              keyboardType: TextInputType.number,
+            )),
+        ElevatedButton(
+            onPressed: () {
+              setState(() {
+                page++;
+                pageNumberController.text = '$page';
+              });
+            },
+            child: const Text('Next'))
+      ],
     );
   }
 }
@@ -149,15 +180,26 @@ class BriefSummaryCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisSize: MainAxisSize.min,
               children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      briefSummary.status,
-                      textAlign: TextAlign.left,
-                    ), //TODO show color based on teh status
-                    Text(briefSummary.nctID),
-                  ],
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Flexible(
+                        child: Row(
+                          children: [
+                            const Icon(Icons.circle, color: Colors.green, size: 10,),
+                            const SizedBox(width: 5,),
+                            Text(
+                              briefSummary.status,
+                              textAlign: TextAlign.left,
+                            ),
+                          ],
+                        ),
+                      ),
+                      Text(briefSummary.nctID),
+                    ],
+                  ),
                 ),
                 Center(
                     child: Text(

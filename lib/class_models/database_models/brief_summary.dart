@@ -18,7 +18,6 @@ class BriefSummary {
   ];
 
   final String nctID;
-
   final DateTime? lastDateUpdate;
   final String status;
   final String title;
