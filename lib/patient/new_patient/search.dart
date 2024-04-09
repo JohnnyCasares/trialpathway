@@ -14,7 +14,7 @@ class PatientSearch extends StatefulWidget {
 }
 
 class _PatientSearchState extends State<PatientSearch> {
-  int page = 1;
+  int page = 1; //TODO: REMEMBER LAST PAGE VISITED
   late TextEditingController pageNumberController;
   Future refresh(int page) async {
     setState(() {
@@ -38,17 +38,7 @@ class _PatientSearchState extends State<PatientSearch> {
     List<Widget> listOfStudies = [];
     return Scaffold(
       appBar: AppBar(actions: [refreshButton()],),
-      drawer:Drawer(
-        child: Column(
-          children: [
-            Text('TEST'),
-            Text('TEST'),
-            Text('TEST'),
-            Text('TEST'),
-            Text('TEST'),
-          ],
-        ),
-      ) ,
+      drawer:drawer(),
       body: FutureBuilder(
           future: DatabaseQueries().getBriefStudies(page-1),
           builder: (context, result) {
@@ -63,6 +53,7 @@ class _PatientSearchState extends State<PatientSearch> {
                       refresh(page);
                     },
                     child: ListView(
+                      key: PageStorageKey(0),
                       children: listOfStudies,
                     ));
               } else {
@@ -101,29 +92,20 @@ class _PatientSearchState extends State<PatientSearch> {
     // bottomNavigationBar: bottomNavBar(),
   }
 
-  Widget filters() {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          IconButton(onPressed: (){
-            const Drawer(
-              child: Column(
-                children: [
-                  Text('TEST'),
-                  Text('TEST'),
-                  Text('TEST'),
-                  Text('TEST'),
-                  Text('TEST'),
-                ],
-              ),
-            );
-          }, icon: const Icon(Icons.menu)),
-          refreshButton()
-        ],
-      ),
-    );
+  Widget drawer() {
+    return
+          const Drawer(
+            child: Column(
+              children: [
+                Text('TEST'),
+                Text('TEST'),
+                Text('TEST'),
+                Text('TEST'),
+                Text('TEST'),
+              ],
+            ),
+          );
+
 
   }
 

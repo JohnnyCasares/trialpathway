@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:hti_trialpathway/class_models/patient.dart';
 import 'package:hti_trialpathway/main.dart';
@@ -13,6 +14,8 @@ class Profile extends StatefulWidget {
 
 class _ProfileState extends State<Profile> {
   Patient patient = getIt<Patient>();
+  final _formKey = GlobalKey<FormState>();
+  bool _formChange = false;
   late Sex _selectedSex;
   late TextEditingController name;
   late TextEditingController age;
@@ -51,95 +54,155 @@ class _ProfileState extends State<Profile> {
         child: Center(
           child: SizedBox(
             width: 600,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                //personal info: name, age, sex
-                const Text(
-                  'Personal Information',
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                ),
-                ProfileTile(
-                    title: 'Name',
-                    field: CustomTextFormField(
-
-                      controller: name,
-                    )),
-                ProfileTile(
-                    title: 'Age',
-                    field: CustomTextFormField(
-
-                      controller: age,
-                    )),
-                ProfileTile(
-                  title: 'Sex',
-                  field: Row(
-                    children: <Widget>[
-                      Radio(
-                        value: Sex.male,
-                        groupValue: _selectedSex,
-                        onChanged: (value) {
-                          setState(() {
-                            _selectedSex = value as Sex;
-                          });
-                        },
-                      ),
-                      const Text('Male'),
-                      Radio(
-                        value: Sex.female,
-                        groupValue: _selectedSex,
-                        onChanged: (value) {
-                          setState(() {
-                            _selectedSex = value as Sex;
-                          });
-                        },
-                      ),
-                      const Text('Female'),
-                    ],
+            child: Form(
+              key: _formKey,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  //personal info: name, age, sex
+                  const Text(
+                    'Personal Information',
+                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                   ),
-                ),
-                ProfileTile(
-                    title: 'Country',
-                    onTap: () {
-                      generalData.countriesDialog(context);
-                    },
-                    field: CustomTextFormField(
-
-                      controller: country,
-
-                    )),
-                if(country.text == 'United States')
-                ProfileTile(
-                    title: 'State',
-                    field: CustomTextFormField(
-
-                      controller: state,
-                    )),
-                //clinical info: health? conditions, pregnancy,
-                const Text('Clinical and Medical Information',
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-                CheckboxListTile(
-                    title: const Text('Healthy'),
-                    value: healthy,
-                    onChanged: (val) {}),
-                ProfileTile(
-                    title: 'Conditions',
-                  onTap: () {
-
-                    generalData.conditionsDialog(context);
-                  },
-                    field: CustomTextFormField(
-                      hintText: 'Choose any condition or illness you may have',
-                      controller: conditions,
-                    )),
-                //only show if women
-                if (_selectedSex == Sex.female)
+                  ProfileTile(
+                      title: 'Name',
+                      field: CustomTextFormField(
+                        onChanged: (value) {
+                          onChangeProfileField(value, patient.name);
+                        },
+                        onSaved: (value) {
+                          setState(() {
+                            patient.name = value!;
+                          });
+                        },
+                        controller: name,
+                      )),
+                  ProfileTile(
+                      title: 'Age',
+                      field: CustomTextFormField(
+                        onChanged: (value) {
+                          onChangeProfileField(value, patient.age.toString());
+                        },
+                        onSaved: (value) {
+                          if (value != null) {
+                            setState(() {
+                              patient.age = int.parse(value);
+                            });
+                          }
+                        },
+                        controller: age,
+                      )),
+                  ProfileTile(
+                    title: 'Sex',
+                    field: Row(
+                      children: <Widget>[
+                        Radio(
+                          value: Sex.male,
+                          groupValue: _selectedSex,
+                          onChanged: (value) {
+                            setState(() {
+                              _selectedSex = value as Sex;
+                            });
+                          },
+                        ),
+                        const Text('Male'),
+                        Radio(
+                          value: Sex.female,
+                          groupValue: _selectedSex,
+                          onChanged: (value) {
+                            setState(() {
+                              _selectedSex = value as Sex;
+                            });
+                          },
+                        ),
+                        const Text('Female'),
+                      ],
+                    ),
+                  ),
+                  ProfileTile(
+                      title: 'Country',
+                      onTap: () async {
+                        await chooseCountry(context);
+                      },
+                      field: CustomTextFormField(
+                        readOnly: true,
+                        controller: country,
+                        onSaved: (value) {
+                          setState(() {
+                            patient.country = value!;
+                          });
+                        },
+                        onTap: () async {
+                          await chooseCountry(context);
+                        },
+                      )),
+                  if (country.text == 'United States')
+                    ProfileTile(
+                        title: 'State',
+                        field: CustomTextFormField(
+                          controller: state,
+                          onChanged: (value) {
+                            onChangeProfileField(value, patient.state);
+                          },
+                        )),
+                  //clinical info: health? conditions, pregnancy,
+                  const Text('Clinical and Medical Information',
+                      style:
+                          TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
                   CheckboxListTile(
-                      title: const Text('Pregnant'),
-                      value: pregnant,
+                      title: const Text('Healthy'),
+                      value: healthy,
                       onChanged: (val) {}),
-              ],
+                  ProfileTile(
+                      title: 'Conditions',
+                      onTap: () async {
+                        await chooseCondition(context);
+                      },
+                      field: CustomTextFormField(
+                        onTap: () async {
+                          await chooseCondition(context);
+                        },
+                        readOnly: true,
+                        hintText:
+                            'Choose any condition or illness you may have',
+                        controller: conditions,
+                        onSaved: (value) {
+                          // setState(() {
+                          //   patient.conditions = value!.split(',');
+                          // });
+                        },
+                      )),
+                  //only show if women
+                  if (_selectedSex == Sex.female)
+                    CheckboxListTile(
+                        title: const Text('Pregnant'),
+                        value: pregnant,
+                        onChanged: (val) {}),
+
+                  Padding(
+                    padding: const EdgeInsets.all(20.0),
+                    child: Center(
+                        child: ActionChip(
+                      label: const Text('Save'),
+                      onPressed: _formChange
+                          ? () {
+                              if (_formKey.currentState!.validate()) {
+                                _formKey.currentState!.save();
+                                setState(() {
+                                  _formChange = false;
+                                });
+                              } else {
+                                setState(() {
+                                  _formChange = false;
+                                });
+                              }
+                            }
+                          : null,
+                    )),
+                  )
+                ],
+              ),
             ),
           ),
         ),
@@ -147,17 +210,68 @@ class _ProfileState extends State<Profile> {
     );
   }
 
+  Future<void> chooseCountry(BuildContext context) async {
+     String tmp =
+        (await generalData.countriesDialog(context) ??
+                patient.country)
+            .trim();
+    setState(() {
+      country.text = tmp;
+    });
+    onChangeProfileField(tmp, patient.country);
+  }
+
+  Future<void> chooseCondition(BuildContext context) async {
+    String tmp = (await generalData.conditionsDialog(context,
+            initialSelection: patient.conditions) ??
+        conditions.text).trim();
+
+    String oldValue = conditions.text;
+    setState(() {
+      conditions.text = tmp;
+    });
+    onChangeProfileField(tmp, oldValue);
+  }
+
+  void onChangeProfileField(String value, String oldValue) {
+    print(value);
+    print(oldValue);
+    if (!_formKey.currentState!.validate()) {
+      setState(() {
+        _formChange = false;
+      });
+    } else {
+      if (value != oldValue) {
+        setState(() {
+          _formChange = true;
+        });
+      } else {
+        setState(() {
+          _formChange = false;
+        });
+      }
+    }
+  }
 }
 
 class ProfileTile extends StatelessWidget {
-  const ProfileTile({super.key, required this.title, required this.field, this.onTap});
+  const ProfileTile(
+      {super.key,
+      required this.title,
+      required this.field,
+      this.onTap,
+      this.textChanged = false});
   final String title;
   final Widget field;
-final Function()? onTap;
+  final Function()? onTap;
+  final bool textChanged;
+
   @override
   Widget build(BuildContext context) {
     return ListTile(
-        leading: SizedBox(width: 60, child: Text(title)), title: field,
-    onTap: onTap,);
+      leading: SizedBox(width: 60, child: Text(title)),
+      title: field,
+      onTap: onTap,
+    );
   }
 }
