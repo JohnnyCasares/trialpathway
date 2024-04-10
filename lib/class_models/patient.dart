@@ -47,12 +47,13 @@ class Patient {
         'Arthritis',
         'Depression',
       ];
+
       int numConditions = Random().nextInt(possibleConditions.length);
       conditions = List.generate(numConditions, (index) {
         return possibleConditions[index];
       });
 
-
+    conditions.sort();
     // Randomly set pregnancy status
     bool pregnant = sex == Sex.female && Random().nextBool();
 

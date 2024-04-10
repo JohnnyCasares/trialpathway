@@ -159,19 +159,23 @@ class _ProfileState extends State<Profile> {
                       onTap: () async {
                         await chooseCondition(context);
                       },
+
                       field: CustomTextFormField(
+                        readOnly: true,
+                        controller: conditions,
+                        // onSaved: (value) {
+                        //   setState(() {
+                        //     patient.conditions = value!.split(',');
+                        //   });
+                        // },
                         onTap: () async {
                           await chooseCondition(context);
                         },
-                        readOnly: true,
+
                         hintText:
                             'Choose any condition or illness you may have',
-                        controller: conditions,
-                        onSaved: (value) {
-                          // setState(() {
-                          //   patient.conditions = value!.split(',');
-                          // });
-                        },
+
+
                       )),
                   //only show if women
                   if (_selectedSex == Sex.female)
@@ -187,16 +191,7 @@ class _ProfileState extends State<Profile> {
                       label: const Text('Save'),
                       onPressed: _formChange
                           ? () {
-                              if (_formKey.currentState!.validate()) {
-                                _formKey.currentState!.save();
-                                setState(() {
-                                  _formChange = false;
-                                });
-                              } else {
-                                setState(() {
-                                  _formChange = false;
-                                });
-                              }
+                              saveChanges();
                             }
                           : null,
                     )),
@@ -210,10 +205,23 @@ class _ProfileState extends State<Profile> {
     );
   }
 
+  void saveChanges() {
+    if (_formKey.currentState!.validate()) {
+      _formKey.currentState!.save();
+      setState(() {
+        _formChange = false;
+      });
+    } else {
+      setState(() {
+        _formChange = false;
+      });
+    }
+  }
+
   Future<void> chooseCountry(BuildContext context) async {
      String tmp =
         (await generalData.countriesDialog(context) ??
-                patient.country)
+                country.text)
             .trim();
     setState(() {
       country.text = tmp;
@@ -222,20 +230,23 @@ class _ProfileState extends State<Profile> {
   }
 
   Future<void> chooseCondition(BuildContext context) async {
+    String oldValue = patient.conditions
+        .toString()
+        .substring(1, patient.conditions.toString().length - 1);
     String tmp = (await generalData.conditionsDialog(context,
-            initialSelection: patient.conditions) ??
+            initialSelection: conditions.text.split(',')) ??
         conditions.text).trim();
 
-    String oldValue = conditions.text;
+
     setState(() {
       conditions.text = tmp;
     });
+    print('OLD VALUE: ${patient.conditions}');
+    print('NEW VALUE: $tmp');
     onChangeProfileField(tmp, oldValue);
   }
 
   void onChangeProfileField(String value, String oldValue) {
-    print(value);
-    print(oldValue);
     if (!_formKey.currentState!.validate()) {
       setState(() {
         _formChange = false;

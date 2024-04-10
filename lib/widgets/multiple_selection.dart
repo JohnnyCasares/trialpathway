@@ -42,7 +42,10 @@ class _MultipleSelectionDialogState extends State<MultipleSelectionDialog> {
 
   @override
   void initState() {
-    selected = widget.initialSelection ?? [];
+    print('INITIAL SELECTION: ${widget.initialSelection}');
+    if(widget.initialSelection!=null){
+      selected.addAll(widget.initialSelection!.map((e) => e.trim()).toList()) ;
+    }
     allElements = widget.elements;
     foundElements = allElements;
     super.initState();
@@ -104,7 +107,8 @@ class _MultipleSelectionDialogState extends State<MultipleSelectionDialog> {
                         //populate selected if multiple selection is enabled
                         if (widget.isMultipleSelection) {
                           setState(() {
-                            selected.add(foundElements[index]);
+                            selected.add(foundElements[index].trim());
+                            selected.sort();
                             foundElements.remove(foundElements[index]);
                           });
                         } else {
@@ -124,6 +128,7 @@ class _MultipleSelectionDialogState extends State<MultipleSelectionDialog> {
               child: ElevatedButton(
                   onPressed: () {
                     String tmp = selected.toString().substring(1,selected.toString().length-1);
+                    print('return $tmp');
                     Navigator.pop<String>(context, tmp);
                   },
                   child: const Text('Save')),
