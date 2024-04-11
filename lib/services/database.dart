@@ -75,10 +75,8 @@ class DatabaseQueries {
             .execute(eligibility, parameters: {
           'nct_id': result[i].nctID
         });
-        print('ELIGIBILITY');
         Map<String, dynamic> test1 = Map.fromIterables(Eligibility.columns, test[0]);
         result[i].eligibility = Eligibility.fromJson(test1);
-      // result[i].eligibility!.printAll();
       }
 
 

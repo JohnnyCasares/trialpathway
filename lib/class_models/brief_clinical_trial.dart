@@ -134,8 +134,8 @@ class Eligibility {
   String? healthyVolunteers;
   String? population;
   String? criteria;
-  bool?   isAdult;
   bool?   isChild;
+  bool?   isAdult;
   bool?   isOlderAdult;
   Eligibility(
       this.samplingMethod,
@@ -145,8 +145,9 @@ class Eligibility {
       this.healthyVolunteers,
       this.population,
       this.criteria,
-      this.isAdult,
       this.isChild,
+      this.isAdult,
+
       this.isOlderAdult);
   factory Eligibility.fromJson(Map<String, dynamic> json) => _$EligibilityFromJson(json);
 
@@ -161,8 +162,8 @@ class Eligibility {
     $healthyVolunteers
     $population
     $criteria
-    $isAdult
     $isChild
+    $isAdult
     $isOlderAdult
     ''');
   }

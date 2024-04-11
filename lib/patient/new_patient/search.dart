@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:hti_trialpathway/class_models/brief_clinical_trial.dart';
 import 'package:hti_trialpathway/services/database.dart';
 import 'package:hti_trialpathway/services/file_storage.dart';
@@ -59,9 +58,14 @@ class _PatientSearchState extends State<PatientSearch> {
                     onRefresh: () async {
                       refresh(page);
                     },
-                    child: ListView(
-                      key: PageStorageKey(0),
-                      children: listOfStudies,
+                    child: Center(
+                      child: SizedBox(
+                        width: 1000,
+                        child: ListView(
+                          key: const PageStorageKey(0),
+                          children: listOfStudies,
+                        ),
+                      ),
                     ));
               } else {
                 print(result.error.toString());
@@ -164,6 +168,7 @@ class BriefSummaryCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisSize: MainAxisSize.min,
               children: [
+                patientQualifies(),
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Row(
@@ -266,5 +271,17 @@ class BriefSummaryCard extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  Row patientQualifies() {
+    return const Row(
+                children: [
+                  Padding(
+                    padding: EdgeInsets.all(8.0),
+                    child: Icon(Icons.keyboard_double_arrow_right_outlined),
+                  ),
+                   Text('You may qualify', style: TextStyle(fontStyle: FontStyle.italic, fontWeight: FontWeight.w700),),
+                ],
+              );
   }
 }
