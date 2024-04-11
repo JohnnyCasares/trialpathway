@@ -1,7 +1,6 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:hti_trialpathway/class_models/database_models/brief_summary.dart';
+import 'package:hti_trialpathway/class_models/brief_clinical_trial.dart';
 import 'package:hti_trialpathway/services/database.dart';
 import 'package:hti_trialpathway/services/file_storage.dart';
 import 'package:hti_trialpathway/widgets/custom_textformfield.dart';
@@ -18,7 +17,6 @@ class _PatientSearchState extends State<PatientSearch> {
   late TextEditingController pageNumberController;
   Future refresh(int page) async {
     setState(() {
-
       try {
         FileStorageService().delete('${page - 1}', format: 'json');
       } on Exception catch (e) {
@@ -37,13 +35,22 @@ class _PatientSearchState extends State<PatientSearch> {
   Widget build(BuildContext context) {
     List<Widget> listOfStudies = [];
     return Scaffold(
-      appBar: AppBar(actions: [refreshButton()],),
-      drawer:drawer(),
+      appBar: AppBar(
+        automaticallyImplyLeading: false,
+        actions: [refreshButton()],
+        leading: Builder(builder: (context) {
+          return IconButton(
+            onPressed: () => Scaffold.of(context).openDrawer(),
+            icon: const Icon(Icons.filter_list_outlined),
+          );
+        }),
+      ),
+
+      drawer: drawer(),
       body: FutureBuilder(
-          future: DatabaseQueries().getBriefStudies(page-1),
+          future: DatabaseQueries().getBriefStudies(page - 1),
           builder: (context, result) {
             if (result.connectionState == ConnectionState.done) {
-
               if (result.hasData) {
                 listOfStudies.addAll(
                     result.data!.map((e) => BriefSummaryCard(briefSummary: e)));
@@ -58,14 +65,10 @@ class _PatientSearchState extends State<PatientSearch> {
                     ));
               } else {
                 print(result.error.toString());
-                return  Center(
+                return Center(
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
-
-                    children: [
-                      Text('An error occurred'),
-                      refreshButton()
-                    ],
+                    children: [Text('An error occurred'), refreshButton()],
                   ),
                 );
               }
@@ -80,7 +83,7 @@ class _PatientSearchState extends State<PatientSearch> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Text('Check your internet connection'),
+                    const Text('Check your internet connection'),
                     refreshButton()
                   ],
                 ),
@@ -93,23 +96,22 @@ class _PatientSearchState extends State<PatientSearch> {
   }
 
   Widget drawer() {
-    return
-          const Drawer(
-            child: Column(
-              children: [
-                Text('TEST'),
-                Text('TEST'),
-                Text('TEST'),
-                Text('TEST'),
-                Text('TEST'),
-              ],
-            ),
-          );
+    return  Drawer(
 
+        child: ListView(
+          children: const [
+            Text('Filters here'),
 
+          ],
+        ),
+        );
   }
 
-  IconButton refreshButton() => IconButton(onPressed: ()async{refresh(page);}, icon: const Icon(Icons.refresh));
+  IconButton refreshButton() => IconButton(
+      onPressed: () async {
+        refresh(page);
+      },
+      icon: const Icon(Icons.refresh));
 
   Widget pageController() {
     return Row(
@@ -147,7 +149,7 @@ class _PatientSearchState extends State<PatientSearch> {
 
 class BriefSummaryCard extends StatelessWidget {
   const BriefSummaryCard({super.key, required this.briefSummary});
-  final BriefSummary briefSummary;
+  final BriefClinicalTrial briefSummary;
 
   @override
   Widget build(BuildContext context) {
@@ -170,8 +172,14 @@ class BriefSummaryCard extends StatelessWidget {
                       Flexible(
                         child: Row(
                           children: [
-                            const Icon(Icons.circle, color: Colors.green, size: 10,),
-                            const SizedBox(width: 5,),
+                            const Icon(
+                              Icons.circle,
+                              color: Colors.green,
+                              size: 10,
+                            ),
+                            const SizedBox(
+                              width: 5,
+                            ),
                             Text(
                               briefSummary.status,
                               textAlign: TextAlign.left,
@@ -198,7 +206,10 @@ class BriefSummaryCard extends StatelessWidget {
                       const Divider(),
                       Row(
                         children: [
-                          const Text('Type of intervention:\t', style: TextStyle(fontWeight: FontWeight.bold),),
+                          const Text(
+                            'Type of intervention:\t',
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                          ),
                           Wrap(
                               direction: Axis.horizontal,
                               children: briefSummary.interventionType!

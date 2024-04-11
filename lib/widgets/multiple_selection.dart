@@ -42,7 +42,6 @@ class _MultipleSelectionDialogState extends State<MultipleSelectionDialog> {
 
   @override
   void initState() {
-    print('INITIAL SELECTION: ${widget.initialSelection}');
     if(widget.initialSelection!=null){
       selected.addAll(widget.initialSelection!.map((e) => e.trim()).toList()) ;
     }
@@ -128,7 +127,6 @@ class _MultipleSelectionDialogState extends State<MultipleSelectionDialog> {
               child: ElevatedButton(
                   onPressed: () {
                     String tmp = selected.toString().substring(1,selected.toString().length-1);
-                    print('return $tmp');
                     Navigator.pop<String>(context, tmp);
                   },
                   child: const Text('Save')),

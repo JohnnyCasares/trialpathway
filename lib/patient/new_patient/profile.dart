@@ -163,11 +163,11 @@ class _ProfileState extends State<Profile> {
                       field: CustomTextFormField(
                         readOnly: true,
                         controller: conditions,
-                        // onSaved: (value) {
-                        //   setState(() {
-                        //     patient.conditions = value!.split(',');
-                        //   });
-                        // },
+                        onSaved: (value) {
+                          setState(() {
+                            patient.conditions = value!.split(',');
+                          });
+                        },
                         onTap: () async {
                           await chooseCondition(context);
                         },
@@ -241,8 +241,6 @@ class _ProfileState extends State<Profile> {
     setState(() {
       conditions.text = tmp;
     });
-    print('OLD VALUE: ${patient.conditions}');
-    print('NEW VALUE: $tmp');
     onChangeProfileField(tmp, oldValue);
   }
 

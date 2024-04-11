@@ -1,28 +1,14 @@
-import 'package:hti_trialpathway/class_models/super_models/clinical_trial_model.dart';
-
-class ClinicalTrialModel extends ClinicalTrial {
+class ClinicalTrialModel{
   //Study plan
   //armsInterventionsModule -> contains: armGroups and interventions 1:1 relationship
-  Map<String, dynamic> studyPlan;
+  final Map<String, dynamic> studyPlan;
   //outcomesModule-> may contain: primaryOutcomes and secondaryOutcomes
-  Map<String, dynamic> outcomeMeasures;
-  ContactLocation contactsLocations;
-  PointOfContact contactInformation; //pointOfContact
+  final Map<String, dynamic> outcomeMeasures;
+  final ContactLocation contactsLocations;
+  final ContactInformation contactInformation; //pointOfContact
 
-  ClinicalTrialModel({
-    required this.studyPlan,
-    required this.outcomeMeasures,
-    required this.contactsLocations,
-    required this.contactInformation,
-    required super.nctId,
-    required super.lastUpdated,
-    required super.status,
-    required super.title,
-    required super.startDate,
-    required super.estimatedCompletionDate,
-    required super.description,
-    required super.eligibility,
-  });
+  ClinicalTrialModel(
+      this.studyPlan, this.outcomeMeasures, this.contactsLocations, this.contactInformation);
 }
 
 class ContactLocation {
@@ -42,13 +28,13 @@ class ContactLocation {
       required this.geoPoint});
 }
 
-class PointOfContact {
+class ContactInformation {
   String title;
   String organization;
   String email;
   String phone;
 
-  PointOfContact(
+  ContactInformation(
       {required this.title,
       required this.organization,
       required this.email,

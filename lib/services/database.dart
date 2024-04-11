@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:hti_trialpathway/class_models/database_models/brief_summary.dart';
+import 'package:hti_trialpathway/class_models/brief_clinical_trial.dart';
 
 import 'package:postgres/postgres.dart';
 
@@ -27,13 +27,13 @@ class DataBaseService {
 
 class DatabaseQueries {
 
-  Future<List<BriefSummary>> getBriefStudies(int offset) async {
+  Future<List<BriefClinicalTrial>> getBriefStudies(int offset) async {
     String file = await FileStorageService().readFile(fileName: '$offset', format: 'json');
     if (file.isNotEmpty) {
       final jsonFile = jsonDecode(file);
-      List<BriefSummary> briefSummaries = [];
+      List<BriefClinicalTrial> briefSummaries = [];
       for (var savedStudies in jsonFile) {
-        briefSummaries.add(BriefSummary.fromJson(savedStudies));
+        briefSummaries.add(BriefClinicalTrial.fromJson(savedStudies));
       }
       return briefSummaries;
     } else {
@@ -42,14 +42,15 @@ class DatabaseQueries {
       Sql conditions = query.conditions;
       Sql locations = query.locations;
       Sql interventions = query.interventions;
+      Sql eligibility = query.eligibility;
 
       Result briefStudyRows = await getIt<Connection>().execute(briefStudy, parameters: {'offset':offset, 'country_list':getIt<Patient>().country});
 
-      List<BriefSummary> result = [];
+      List<BriefClinicalTrial> result = [];
       for (int i = 0; i < 10; i++) {
         Map<String, dynamic> columns = Map.fromIterables(
-            BriefSummary.columns.getRange(0, 7), briefStudyRows[i]);
-        result.add(BriefSummary(
+            BriefClinicalTrial.columns.getRange(0, 7), briefStudyRows[i]);
+        result.add(BriefClinicalTrial(
           nctID: columns['nctID'],
           lastDateUpdate: columns['lastDateUpdate'],
           status: columns['status'],
@@ -70,9 +71,19 @@ class DatabaseQueries {
             .execute(interventions, parameters: {
           'nct_id': result[i].nctID
         }); //get locations of the study
+        Result test = await getIt<Connection>()
+            .execute(eligibility, parameters: {
+          'nct_id': result[i].nctID
+        });
+        print('ELIGIBILITY');
+        Map<String, dynamic> test1 = Map.fromIterables(Eligibility.columns, test[0]);
+        result[i].eligibility = Eligibility.fromJson(test1);
+      // result[i].eligibility!.printAll();
       }
+
+
       List briefSummaries = [];
-      for (BriefSummary r in result) {
+      for (BriefClinicalTrial r in result) {
         briefSummaries.add(r.toJson());
       }
       FileStorageService().writeFile('$offset', json.encode(briefSummaries));
