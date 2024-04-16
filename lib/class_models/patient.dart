@@ -38,7 +38,7 @@ class Patient {
     bool healthy = Random().nextBool();
 
     // Randomly select conditions (if any)
-    List<String> conditions = [];
+    List<String> conditions = ['GM1 Gangliosidosis'];
 
       List<String> possibleConditions = [
         'Diabetes',
@@ -49,9 +49,9 @@ class Patient {
       ];
 
       int numConditions = Random().nextInt(possibleConditions.length);
-      conditions = List.generate(numConditions, (index) {
+      conditions.addAll(List.generate(numConditions, (index) {
         return possibleConditions[index];
-      });
+      }));
 
     conditions.sort();
     // Randomly set pregnancy status

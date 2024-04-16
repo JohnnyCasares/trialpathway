@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:hti_trialpathway/class_models/brief_clinical_trial.dart';
+import 'package:hti_trialpathway/class_models/patient.dart';
 import 'package:hti_trialpathway/services/database.dart';
 import 'package:hti_trialpathway/services/file_storage.dart';
 import 'package:hti_trialpathway/widgets/custom_textformfield.dart';
+
+import '../../main.dart';
 
 class PatientSearch extends StatefulWidget {
   const PatientSearch({super.key});
@@ -14,6 +17,7 @@ class PatientSearch extends StatefulWidget {
 class _PatientSearchState extends State<PatientSearch> {
   int page = 1; //TODO: REMEMBER LAST PAGE VISITED
   late TextEditingController pageNumberController;
+
   Future refresh(int page) async {
     setState(() {
       try {
@@ -44,7 +48,6 @@ class _PatientSearchState extends State<PatientSearch> {
           );
         }),
       ),
-
       drawer: drawer(),
       body: FutureBuilder(
           future: DatabaseQueries().getBriefStudies(page - 1),
@@ -100,15 +103,13 @@ class _PatientSearchState extends State<PatientSearch> {
   }
 
   Widget drawer() {
-    return  Drawer(
-
-        child: ListView(
-          children: const [
-            Text('Filters here'),
-
-          ],
-        ),
-        );
+    return Drawer(
+      child: ListView(
+        children: const [
+          Text('Filters here'),
+        ],
+      ),
+    );
   }
 
   IconButton refreshButton() => IconButton(
@@ -153,6 +154,7 @@ class _PatientSearchState extends State<PatientSearch> {
 
 class BriefSummaryCard extends StatelessWidget {
   const BriefSummaryCard({super.key, required this.briefSummary});
+
   final BriefClinicalTrial briefSummary;
 
   @override
@@ -168,7 +170,12 @@ class BriefSummaryCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisSize: MainAxisSize.min,
               children: [
-                patientQualifies(),
+
+                if (briefSummary.eligibility
+                        !.ageEligibility(getIt<Patient>().age)
+                    && briefSummary.conditionEligibility(getIt<Patient>().conditions)
+                )
+                  patientQualifies(),
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Row(
@@ -275,13 +282,17 @@ class BriefSummaryCard extends StatelessWidget {
 
   Row patientQualifies() {
     return const Row(
-                children: [
-                  Padding(
-                    padding: EdgeInsets.all(8.0),
-                    child: Icon(Icons.keyboard_double_arrow_right_outlined),
-                  ),
-                   Text('You may qualify', style: TextStyle(fontStyle: FontStyle.italic, fontWeight: FontWeight.w700),),
-                ],
-              );
+      children: [
+        Padding(
+          padding: EdgeInsets.all(8.0),
+          child: Icon(Icons.keyboard_double_arrow_right_outlined),
+        ),
+        Text(
+          'You may qualify for this clinical trial',
+          style: TextStyle(
+              fontStyle: FontStyle.italic, fontWeight: FontWeight.w700),
+        ),
+      ],
+    );
   }
 }
