@@ -15,35 +15,35 @@ class Profile extends StatefulWidget {
 }
 
 class _ProfileState extends State<Profile> {
-  Patient patient = getIt<Patient>();
+  final Patient _patient = getIt<Patient>();
   final _formKey = GlobalKey<FormState>();
   late Sex _selectedSex;
-  late TextEditingController name;
-  late TextEditingController age;
-  late TextEditingController country;
-  late TextEditingController state;
+  late TextEditingController _name;
+  late TextEditingController _age;
+  late TextEditingController _country;
+  late TextEditingController _state;
 
   //clinical info
-  late bool healthy;
-  late TextEditingController conditions;
-  bool pregnant = false;
-  GeneralData generalData = GeneralData();
+  late bool _healthy;
+  late TextEditingController _conditions;
+  bool _pregnant = false;
+  final GeneralData _generalData = GeneralData();
 
   @override
   void initState() {
-    name = TextEditingController(text: patient.name);
-    age = TextEditingController(text: patient.age.toString());
-    _selectedSex = patient.sex;
-    country = TextEditingController(text: patient.country);
-    state = TextEditingController(text: patient.state);
-    healthy = patient.healthy;
-    conditions = TextEditingController(
-        text: patient.conditions.isNotEmpty
-            ? patient.conditions
+    _name = TextEditingController(text: _patient.name);
+    _age = TextEditingController(text: _patient.age.toString());
+    _selectedSex = _patient.sex;
+    _country = TextEditingController(text: _patient.country);
+    _state = TextEditingController(text: _patient.state);
+    _healthy = _patient.healthy;
+    _conditions = TextEditingController(
+        text: _patient.conditions.isNotEmpty
+            ? _patient.conditions
                 .toString()
-                .substring(1, patient.conditions.toString().length - 1)
+                .substring(1, _patient.conditions.toString().length - 1)
             : null);
-    pregnant = patient.pregnant;
+    _pregnant = _patient.pregnant;
 
     super.initState();
   }
@@ -72,7 +72,7 @@ class _ProfileState extends State<Profile> {
                       title: 'Name',
                       field: CustomTextFormField(
                         onChanged: (value) {
-                          if (value != patient.name) {
+                          if (value != _patient.name) {
                             context.read<ProfileProvider>().didNameChange(true);
                           } else {
                             context
@@ -84,16 +84,16 @@ class _ProfileState extends State<Profile> {
                         },
                         onSaved: (value) {
                           setState(() {
-                            patient.name = value!;
+                            _patient.name = value!;
                           });
                         },
-                        controller: name,
+                        controller: _name,
                       )),
                   ProfileTile(
                       title: 'Age',
                       field: CustomTextFormField(
                         onChanged: (value) {
-                          if (value != patient.age.toString()) {
+                          if (value != _patient.age.toString()) {
                             context.read<ProfileProvider>().didAgeChange(true);
                           } else {
                             context.read<ProfileProvider>().didAgeChange(false);
@@ -103,11 +103,11 @@ class _ProfileState extends State<Profile> {
                         onSaved: (value) {
                           if (value != null) {
                             setState(() {
-                              patient.age = int.parse(value);
+                              _patient.age = int.parse(value);
                             });
                           }
                         },
-                        controller: age,
+                        controller: _age,
                       )),
                   ProfileTile(
                     title: 'Sex',
@@ -118,7 +118,10 @@ class _ProfileState extends State<Profile> {
                           value: Sex.male,
                           groupValue: _selectedSex,
                           onChanged: (value) {
-                            if (value != patient.sex) {
+                            setState(() {
+                              _selectedSex = value!;
+                            });
+                            if (value != _patient.sex) {
                               context
                                   .read<ProfileProvider>()
                                   .didSexChange(true);
@@ -136,7 +139,10 @@ class _ProfileState extends State<Profile> {
                           value: Sex.female,
                           groupValue: _selectedSex,
                           onChanged: (value) {
-                            if (value != patient.sex) {
+                            setState(() {
+                              _selectedSex = value!;
+                            });
+                            if (value != _patient.sex) {
                               context
                                   .read<ProfileProvider>()
                                   .didSexChange(true);
@@ -159,23 +165,23 @@ class _ProfileState extends State<Profile> {
                       },
                       field: CustomTextFormField(
                         readOnly: true,
-                        controller: country,
+                        controller: _country,
                         onSaved: (value) {
                           setState(() {
-                            patient.country = value!;
+                            _patient.country = value!;
                           });
                         },
                         onTap: () async {
                           await chooseCountry(context);
                         },
                       )),
-                  if (country.text == 'United States')
+                  if (_country.text == 'United States')
                     ProfileTile(
                         title: 'State',
                         field: CustomTextFormField(
-                          controller: state,
+                          controller: _state,
                           onChanged: (value) {
-                            if (value != patient.state) {
+                            if (value != _patient.state) {
                               context
                                   .read<ProfileProvider>()
                                   .didStateChange(true);
@@ -193,8 +199,24 @@ class _ProfileState extends State<Profile> {
                           TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
                   CheckboxListTile(
                       title: const Text('Healthy'),
-                      value: healthy,
-                      onChanged: (val) {}),
+                      value: _healthy,
+                      onChanged: (val) {
+
+                        setState(() {
+                          _healthy = val!;
+                        });
+                        if (val != _patient.healthy) {
+                          context
+                              .read<ProfileProvider>()
+                              .didHealthyChange(true);
+                        } else {
+                          context
+                              .read<ProfileProvider>()
+                              .didHealthyChange(false);
+                        }
+                        context.read<ProfileProvider>().didProfileChange();
+
+                      }),
                   ProfileTile(
                       title: 'Conditions',
                       onTap: () async {
@@ -202,10 +224,10 @@ class _ProfileState extends State<Profile> {
                       },
                       field: CustomTextFormField(
                         readOnly: true,
-                        controller: conditions,
+                        controller: _conditions,
                         onSaved: (value) {
                           setState(() {
-                            patient.conditions = value!.split(',');
+                            _patient.conditions = value!.split(',');
                           });
                         },
                         onTap: () async {
@@ -218,8 +240,23 @@ class _ProfileState extends State<Profile> {
                   if (_selectedSex == Sex.female)
                     CheckboxListTile(
                         title: const Text('Pregnant'),
-                        value: pregnant,
-                        onChanged: (val) {}),
+                        value: _pregnant,
+                        onChanged: (val) {
+                          setState(() {
+                            _pregnant = val!;
+                          });
+                          if (val != _patient.pregnant) {
+                            context
+                                .read<ProfileProvider>()
+                                .didPregnantChange(true);
+                          } else {
+                            context
+                                .read<ProfileProvider>()
+                                .didPregnantChange(false);
+                          }
+                          context.read<ProfileProvider>().didProfileChange();
+
+                        }),
 
                   Padding(
                     padding: const EdgeInsets.all(20.0),
@@ -244,6 +281,15 @@ class _ProfileState extends State<Profile> {
 
   void saveChanges() {
     if (_formKey.currentState!.validate()) {
+      if(context.read<ProfileProvider>().sex){
+        _patient.sex = _selectedSex;
+      }
+      if(context.read<ProfileProvider>().healthy){
+        _patient.healthy = _healthy;
+      }
+      if(context.read<ProfileProvider>().pregnant){
+        _patient.pregnant = _pregnant;
+      }
       _formKey.currentState!.save();
       context.read<ProfileProvider>().didProfileChange();
       context.read<ProfileProvider>().resetProfileProvider();
@@ -252,11 +298,11 @@ class _ProfileState extends State<Profile> {
 
   Future<void> chooseCountry(BuildContext context) async {
     String tmp =
-        (await generalData.countriesDialog(context) ?? country.text).trim();
+        (await _generalData.countriesDialog(context) ?? _country.text).trim();
     setState(() {
-      country.text = tmp;
+      _country.text = tmp;
     });
-    if (tmp != patient.country) {
+    if (tmp != _patient.country) {
       context.read<ProfileProvider>().didCountryChange(true);
     } else {
       context.read<ProfileProvider>().didCountryChange(false);
@@ -265,42 +311,29 @@ class _ProfileState extends State<Profile> {
   }
 
   Future<void> chooseCondition(BuildContext context) async {
-    String oldValue = patient.conditions
+    String oldValue = _patient.conditions
         .toString()
-        .substring(1, patient.conditions.toString().length - 1);
-    String tmp = (await generalData.conditionsDialog(context,
-                initialSelection: conditions.text.split(',')) ??
-            conditions.text)
+        .substring(1, _patient.conditions
+        .toString()
+        .length - 1);
+    String tmp = (await _generalData.conditionsDialog(context,
+        initialSelection: _conditions.text.split(',')) ??
+        _conditions.text)
         .trim();
 
     setState(() {
-      conditions.text = tmp;
+      _conditions.text = tmp;
     });
-    if (oldValue != tmp) {
-      context.read<ProfileProvider>().didConditionsChange(true);
-    } else {
-      context.read<ProfileProvider>().didConditionsChange(false);
+    if (context.mounted) {
+      if (oldValue != tmp) {
+        context.read<ProfileProvider>().didConditionsChange(true);
+      } else {
+        context.read<ProfileProvider>().didConditionsChange(false);
+      }
+      context.read<ProfileProvider>().didProfileChange();
     }
-    context.read<ProfileProvider>().didProfileChange();
   }
 
-// void onChangeProfileField(String value, String oldValue) {
-//   if (!_formKey.currentState!.validate()) {
-//     setState(() {
-//       _formChange = false;
-//     });
-//   } else {
-//     if (value != oldValue) {
-//       setState(() {
-//         _formChange = true;
-//       });
-//     } else {
-//       setState(() {
-//         _formChange = false;
-//       });
-//     }
-//   }
-// }
 }
 
 class ProfileTile extends StatelessWidget {
