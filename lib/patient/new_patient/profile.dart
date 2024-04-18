@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:hti_trialpathway/class_models/patient.dart';
 import 'package:hti_trialpathway/main.dart';
@@ -302,12 +301,14 @@ class _ProfileState extends State<Profile> {
     setState(() {
       _country.text = tmp;
     });
-    if (tmp != _patient.country) {
-      context.read<ProfileProvider>().didCountryChange(true);
-    } else {
-      context.read<ProfileProvider>().didCountryChange(false);
+    if(context.mounted) {
+      if (tmp != _patient.country) {
+        context.read<ProfileProvider>().didCountryChange(true);
+      } else {
+        context.read<ProfileProvider>().didCountryChange(false);
+      }
+      context.read<ProfileProvider>().didProfileChange();
     }
-    context.read<ProfileProvider>().didProfileChange();
   }
 
   Future<void> chooseCondition(BuildContext context) async {
