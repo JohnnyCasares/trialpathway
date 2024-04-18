@@ -2,7 +2,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:hti_trialpathway/class_models/patient.dart';
 import 'package:hti_trialpathway/main.dart';
+import 'package:hti_trialpathway/providers/profile_provider.dart';
 import 'package:hti_trialpathway/widgets/custom_textformfield.dart';
+import 'package:provider/provider.dart';
 import '../../class_models/database_models/general_data.dart';
 
 class Profile extends StatefulWidget {
@@ -15,17 +17,18 @@ class Profile extends StatefulWidget {
 class _ProfileState extends State<Profile> {
   Patient patient = getIt<Patient>();
   final _formKey = GlobalKey<FormState>();
-  bool _formChange = false;
   late Sex _selectedSex;
   late TextEditingController name;
   late TextEditingController age;
   late TextEditingController country;
   late TextEditingController state;
+
   //clinical info
   late bool healthy;
   late TextEditingController conditions;
   bool pregnant = false;
   GeneralData generalData = GeneralData();
+
   @override
   void initState() {
     name = TextEditingController(text: patient.name);
@@ -69,7 +72,15 @@ class _ProfileState extends State<Profile> {
                       title: 'Name',
                       field: CustomTextFormField(
                         onChanged: (value) {
-                          onChangeProfileField(value, patient.name);
+                          if (value != patient.name) {
+                            context.read<ProfileProvider>().didNameChange(true);
+                          } else {
+                            context
+                                .read<ProfileProvider>()
+                                .didNameChange(false);
+                          }
+                          // // Update profileChange whenever any field changes
+                          context.read<ProfileProvider>().didProfileChange();
                         },
                         onSaved: (value) {
                           setState(() {
@@ -82,7 +93,12 @@ class _ProfileState extends State<Profile> {
                       title: 'Age',
                       field: CustomTextFormField(
                         onChanged: (value) {
-                          onChangeProfileField(value, patient.age.toString());
+                          if (value != patient.age.toString()) {
+                            context.read<ProfileProvider>().didAgeChange(true);
+                          } else {
+                            context.read<ProfileProvider>().didAgeChange(false);
+                          }
+                          context.read<ProfileProvider>().didProfileChange();
                         },
                         onSaved: (value) {
                           if (value != null) {
@@ -98,22 +114,38 @@ class _ProfileState extends State<Profile> {
                     field: Row(
                       children: <Widget>[
                         Radio(
+                          // initialValue: _selectedSex,
                           value: Sex.male,
                           groupValue: _selectedSex,
                           onChanged: (value) {
-                            setState(() {
-                              _selectedSex = value as Sex;
-                            });
+                            if (value != patient.sex) {
+                              context
+                                  .read<ProfileProvider>()
+                                  .didSexChange(true);
+                            } else {
+                              context
+                                  .read<ProfileProvider>()
+                                  .didSexChange(false);
+                            }
+                            context.read<ProfileProvider>().didProfileChange();
                           },
                         ),
                         const Text('Male'),
                         Radio(
+                          // initialValue: _selectedSex,
                           value: Sex.female,
                           groupValue: _selectedSex,
                           onChanged: (value) {
-                            setState(() {
-                              _selectedSex = value as Sex;
-                            });
+                            if (value != patient.sex) {
+                              context
+                                  .read<ProfileProvider>()
+                                  .didSexChange(true);
+                            } else {
+                              context
+                                  .read<ProfileProvider>()
+                                  .didSexChange(false);
+                            }
+                            context.read<ProfileProvider>().didProfileChange();
                           },
                         ),
                         const Text('Female'),
@@ -143,7 +175,16 @@ class _ProfileState extends State<Profile> {
                         field: CustomTextFormField(
                           controller: state,
                           onChanged: (value) {
-                            onChangeProfileField(value, patient.state);
+                            if (value != patient.state) {
+                              context
+                                  .read<ProfileProvider>()
+                                  .didStateChange(true);
+                            } else {
+                              context
+                                  .read<ProfileProvider>()
+                                  .didStateChange(false);
+                            }
+                            context.read<ProfileProvider>().didProfileChange();
                           },
                         )),
                   //clinical info: health? conditions, pregnancy,
@@ -159,7 +200,6 @@ class _ProfileState extends State<Profile> {
                       onTap: () async {
                         await chooseCondition(context);
                       },
-
                       field: CustomTextFormField(
                         readOnly: true,
                         controller: conditions,
@@ -171,11 +211,8 @@ class _ProfileState extends State<Profile> {
                         onTap: () async {
                           await chooseCondition(context);
                         },
-
                         hintText:
                             'Choose any condition or illness you may have',
-
-
                       )),
                   //only show if women
                   if (_selectedSex == Sex.female)
@@ -189,7 +226,7 @@ class _ProfileState extends State<Profile> {
                     child: Center(
                         child: ActionChip(
                       label: const Text('Save'),
-                      onPressed: _formChange
+                      onPressed: context.watch<ProfileProvider>().profileChange
                           ? () {
                               saveChanges();
                             }
@@ -208,25 +245,23 @@ class _ProfileState extends State<Profile> {
   void saveChanges() {
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save();
-      setState(() {
-        _formChange = false;
-      });
-    } else {
-      setState(() {
-        _formChange = false;
-      });
+      context.read<ProfileProvider>().didProfileChange();
+      context.read<ProfileProvider>().resetProfileProvider();
     }
   }
 
   Future<void> chooseCountry(BuildContext context) async {
-     String tmp =
-        (await generalData.countriesDialog(context) ??
-                country.text)
-            .trim();
+    String tmp =
+        (await generalData.countriesDialog(context) ?? country.text).trim();
     setState(() {
       country.text = tmp;
     });
-    onChangeProfileField(tmp, patient.country);
+    if (tmp != patient.country) {
+      context.read<ProfileProvider>().didCountryChange(true);
+    } else {
+      context.read<ProfileProvider>().didCountryChange(false);
+    }
+    context.read<ProfileProvider>().didProfileChange();
   }
 
   Future<void> chooseCondition(BuildContext context) async {
@@ -234,33 +269,38 @@ class _ProfileState extends State<Profile> {
         .toString()
         .substring(1, patient.conditions.toString().length - 1);
     String tmp = (await generalData.conditionsDialog(context,
-            initialSelection: conditions.text.split(',')) ??
-        conditions.text).trim();
-
+                initialSelection: conditions.text.split(',')) ??
+            conditions.text)
+        .trim();
 
     setState(() {
       conditions.text = tmp;
     });
-    onChangeProfileField(tmp, oldValue);
+    if (oldValue != tmp) {
+      context.read<ProfileProvider>().didConditionsChange(true);
+    } else {
+      context.read<ProfileProvider>().didConditionsChange(false);
+    }
+    context.read<ProfileProvider>().didProfileChange();
   }
 
-  void onChangeProfileField(String value, String oldValue) {
-    if (!_formKey.currentState!.validate()) {
-      setState(() {
-        _formChange = false;
-      });
-    } else {
-      if (value != oldValue) {
-        setState(() {
-          _formChange = true;
-        });
-      } else {
-        setState(() {
-          _formChange = false;
-        });
-      }
-    }
-  }
+// void onChangeProfileField(String value, String oldValue) {
+//   if (!_formKey.currentState!.validate()) {
+//     setState(() {
+//       _formChange = false;
+//     });
+//   } else {
+//     if (value != oldValue) {
+//       setState(() {
+//         _formChange = true;
+//       });
+//     } else {
+//       setState(() {
+//         _formChange = false;
+//       });
+//     }
+//   }
+// }
 }
 
 class ProfileTile extends StatelessWidget {
@@ -270,6 +310,7 @@ class ProfileTile extends StatelessWidget {
       required this.field,
       this.onTap,
       this.textChanged = false});
+
   final String title;
   final Widget field;
   final Function()? onTap;

@@ -8,16 +8,14 @@ class GeneralData {
   Future<List<String>> getCountries() async {
     final countries = await FileStorageService()
         .readFile(fileName: 'countries', format: 'csv', customPath: path);
-    List<String> fileToList = countries.split('\n');
-    fileToList.sort();
+    List<String> fileToList = countries.split('\n').map((e) => e.trim()).toList();
     return fileToList.sublist(1);
   }
 
   Future<List<String>> getConditions() async {
     final conditions = await FileStorageService()
         .readFile(fileName: 'conditions', format: 'csv', customPath: path);
-    List<String> fileToList = conditions.split('\n');
-    fileToList.sort();
+    List<String> fileToList = conditions.split('\n').map((e) => e.trim()).toList();
     return fileToList.sublist(1);
   }
 

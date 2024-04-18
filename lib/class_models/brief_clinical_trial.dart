@@ -55,7 +55,7 @@ class BriefClinicalTrial {
       return false;
     } else {
       List<String> tmp = conditions!.map((e) => e[0] as String).toList();
-      double threshold = 0.7; // You can adjust this threshold as needed
+      double threshold = 0.3; // You can adjust this threshold as needed
       bool related = _areRelated(tmp, patientConditions, threshold);
       return related;
     }

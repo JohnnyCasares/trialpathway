@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:hti_trialpathway/patient/new_patient/profile.dart';
 import 'package:hti_trialpathway/patient/new_patient/search.dart';
+import 'package:provider/provider.dart';
 
+import '../../providers/profile_provider.dart';
 import '../../widgets/my_appbar.dart';
 
 class SearchMain extends StatefulWidget {
@@ -17,11 +19,14 @@ class _SearchMainState extends State<SearchMain> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar:  const MyAppBar(),
-      body: views[pageIndex],
-      bottomNavigationBar: bottomNavBar(),
+    return ChangeNotifierProvider<ProfileProvider>(
+      create: (_)=>ProfileProvider(),
+      child: Scaffold(
+        appBar:  const MyAppBar(),
+        body: views[pageIndex],
+        bottomNavigationBar: bottomNavBar(),
 
+      ),
     );
   }
 

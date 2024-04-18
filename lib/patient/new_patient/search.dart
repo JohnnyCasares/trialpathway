@@ -159,6 +159,11 @@ class BriefSummaryCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
+    bool isEligible = briefSummary.eligibility
+    !.ageEligibility(getIt<Patient>().age)
+        && briefSummary.conditionEligibility(getIt<Patient>().conditions);
+
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Card(
@@ -175,7 +180,7 @@ class BriefSummaryCard extends StatelessWidget {
                         !.ageEligibility(getIt<Patient>().age)
                     && briefSummary.conditionEligibility(getIt<Patient>().conditions)
                 )
-                  patientQualifies(),
+                  patientQualifies(isEligible, context),
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Row(
@@ -280,19 +285,23 @@ class BriefSummaryCard extends StatelessWidget {
     );
   }
 
-  Row patientQualifies() {
-    return const Row(
-      children: [
-        Padding(
-          padding: EdgeInsets.all(8.0),
-          child: Icon(Icons.keyboard_double_arrow_right_outlined),
-        ),
-        Text(
-          'You may qualify for this clinical trial',
-          style: TextStyle(
-              fontStyle: FontStyle.italic, fontWeight: FontWeight.w700),
-        ),
-      ],
+  Card patientQualifies(bool isEligible, BuildContext context) {
+    return Card(
+      elevation: 0,
+      color: isEligible? Theme.of(context).colorScheme.tertiaryContainer:null,
+      child:  const Row(
+        children: [
+          Padding(
+            padding: EdgeInsets.all(8.0),
+            child: Icon(Icons.keyboard_double_arrow_right_outlined),
+          ),
+          Text(
+            'You may qualify for this clinical trial',
+            style: TextStyle(
+                fontStyle: FontStyle.italic, fontWeight: FontWeight.w700),
+          ),
+        ],
+      ),
     );
   }
 }

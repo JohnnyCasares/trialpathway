@@ -15,15 +15,34 @@ void main() async{
   runApp(const MyApp());
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({super.key});
+
+  @override
+  State<MyApp> createState() => _MyAppState();
+
+  static _MyAppState? of(BuildContext context)=> context.findAncestorStateOfType<_MyAppState>();
+}
+
+class _MyAppState extends State<MyApp> {
+
+  ThemeMode themeMode = ThemeMode.system;
+
+  void toggleTheme(ThemeMode value){
+    setState(() {
+      themeMode = value;
+    });
+
+
+  }
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Trial Pathway',
-      theme: ThemeData(useMaterial3: true, colorScheme: lightColorScheme),
-      darkTheme: ThemeData(useMaterial3: true, colorScheme:darkColorScheme),
+      themeMode: themeMode,
+      theme: CustomTheme.lightColorScheme,
+      darkTheme: CustomTheme.darkColorScheme,
       home: Login(),
     );
   }
