@@ -4,6 +4,7 @@ import 'package:hti_trialpathway/services/database.dart';
 import 'package:hti_trialpathway/theme/color_schemes.g.dart';
 import 'package:hti_trialpathway/user_type.dart';
 import 'package:postgres/postgres.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'class_models/patient.dart';
 
@@ -12,6 +13,7 @@ GetIt getIt = GetIt.instance;
 void main() async{
   getIt.registerSingletonAsync<Connection>(()async => await DataBaseService().initializeDatabase());
   getIt.registerSingleton<Patient>(Patient.generateMockPatient());
+  getIt.registerSingletonAsync<SharedPreferences>(() =>  SharedPreferences.getInstance());
   runApp(const MyApp());
 }
 
@@ -25,15 +27,31 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
+  final SharedPreferences _prefs = getIt<SharedPreferences>();
+  late ThemeMode themeMode;
 
-  ThemeMode themeMode = ThemeMode.system;
+  void toggleTheme(ThemeMode value) async{
 
-  void toggleTheme(ThemeMode value){
     setState(() {
       themeMode = value;
+      if (themeMode.name == ThemeMode.light.name){
+        _prefs.setBool('isDarkMode', false);
+      }else{
+        _prefs.setBool('isDarkMode', true);
+      }
     });
+  }
 
-
+  @override
+  void initState() {
+  if(_prefs.getBool('isDarkMode')!=null) {
+      themeMode = _prefs.getBool('isDarkMode')!
+          ? ThemeMode.dark
+          : ThemeMode.light;
+    }else {
+    themeMode = ThemeMode.system;
+  }
+    super.initState();
   }
 
   @override

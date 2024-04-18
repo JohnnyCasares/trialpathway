@@ -159,10 +159,9 @@ class BriefSummaryCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
-    bool isEligible = briefSummary.eligibility
-    !.ageEligibility(getIt<Patient>().age)
-        && briefSummary.conditionEligibility(getIt<Patient>().conditions);
+    bool isEligible =
+        briefSummary.eligibility!.ageEligibility(getIt<Patient>().age) &&
+            briefSummary.conditionEligibility(getIt<Patient>().conditions);
 
     return Padding(
       padding: const EdgeInsets.all(8.0),
@@ -175,11 +174,7 @@ class BriefSummaryCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisSize: MainAxisSize.min,
               children: [
-
-                if (briefSummary.eligibility
-                        !.ageEligibility(getIt<Patient>().age)
-                    && briefSummary.conditionEligibility(getIt<Patient>().conditions)
-                )
+                if (isEligible)
                   patientQualifies(isEligible, context),
                 Padding(
                   padding: const EdgeInsets.all(8.0),
@@ -236,7 +231,6 @@ class BriefSummaryCard extends StatelessWidget {
                       ),
                     ],
                   ),
-
                 const Divider(),
                 if (briefSummary.conditions != null)
                   Column(
@@ -264,19 +258,31 @@ class BriefSummaryCard extends StatelessWidget {
                               .toList()),
                     ],
                   ),
-                // const Divider(),
-                // const Text('Location:',style: TextStyle(fontWeight: FontWeight.bold)),
-                // Wrap(
-                //   direction: Axis.horizontal,
-                //   children: locations.map((location)
-                //   => Card(
-                //       color: Colors.white70,
-                //       child: Padding(
-                //     padding: const EdgeInsets.all(3.0),
-                //     child: Text('${location[0]}, ${location[1]}'),
-                //   ))
-                //   ).toList()
-                // ),
+                if (briefSummary.locations != null)
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Divider(),
+                      const Text('Location:',
+                          style: TextStyle(fontWeight: FontWeight.bold)),
+                      Wrap(direction: Axis.horizontal, children: [
+                        ...briefSummary.locations!.take(5).map((location) =>
+                            Card(
+                                color: Theme.of(context)
+                                    .colorScheme
+                                    .surfaceVariant,
+                                child: Padding(
+                                  padding: const EdgeInsets.all(3.0),
+                                  child: Text('${location[0]}, ${location[1]}'),
+                                ))),
+                        if (briefSummary.locations!.length > 5)
+                          const Padding(
+                            padding: EdgeInsets.all(3.0),
+                            child: Text('...'),
+                          ),
+                      ]),
+                    ],
+                  ),
               ],
             ),
           ),
@@ -288,8 +294,9 @@ class BriefSummaryCard extends StatelessWidget {
   Card patientQualifies(bool isEligible, BuildContext context) {
     return Card(
       elevation: 0,
-      color: isEligible? Theme.of(context).colorScheme.tertiaryContainer:null,
-      child:  const Row(
+      color:
+          isEligible ? Theme.of(context).colorScheme.tertiaryContainer : null,
+      child: const Row(
         children: [
           Padding(
             padding: EdgeInsets.all(8.0),

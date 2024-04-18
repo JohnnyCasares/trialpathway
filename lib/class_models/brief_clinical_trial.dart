@@ -198,31 +198,13 @@ class Eligibility {
 
   Map<String, dynamic> toJson() => _$EligibilityToJson(this);
 
-  void printAll() {
-    print('''
-    $samplingMethod
-    $gender
-    $minAge
-    $maxAge
-    $healthyVolunteers
-    $population
-    $criteria
-    $isChild
-    $isAdult
-    $isOlderAdult
-    ''');
-  }
-
   bool ageEligibility(int age) {
     //use age to determine age group of patient
     if (isChild != null && age < 18 && isChild!) {
-      // print('child ${isChild! && (0 <= age && age < 18)}');
       return isChild! && (0 <= age && age < 18);
     } else if (isAdult != null && age <= 65 && isAdult!) {
-      // print('adult ${isAdult! && (0 <= age && age < 18)}');
       return isAdult! && (18 <= age && age <= 65);
     } else if (isOlderAdult != null) {
-      // print('olderAdult ${isOlderAdult! && (0 <= age && age < 18)}');
       return isOlderAdult! && (age > 65);
     }
     //if these params are null then try using min and max age
@@ -242,22 +224,11 @@ class Eligibility {
 
       if ((minAgeAndMetric.length == 2 && minAgeAndMetric[1] == 'Years') ||
           (maxAgeAndMetric.length == 2 && maxAgeAndMetric[1] == 'Years')) {
-        print(minA <= age && age <= maxA);
-        print('here');
+        // print(minA <= age && age <= maxA);
+        // print('here');
         return minA <= age && age <= maxA;
       }
     }
     return false;
   }
-
-/*
-  briefSummary.locations?.contains('United States');
-  gender;
-healthyVolunteers;
-minAge;
-maxAge;
-isChild;
-isAdult;
-isAdult;
-   */
 }

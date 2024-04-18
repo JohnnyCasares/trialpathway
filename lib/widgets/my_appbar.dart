@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../main.dart';
 
@@ -22,7 +23,7 @@ class _MyAppBarState extends State<MyAppBar> {
   }
   @override
   Widget build(BuildContext context) {
-    bool isDarkMode = Theme.of(context).brightness == Brightness.dark;
+    bool isDarkMode =getIt<SharedPreferences>().getBool('isDarkMode')?? (Theme.of(context).brightness == Brightness.dark);
 
     final MaterialStateProperty<Icon?> thumbIcon =
     MaterialStateProperty.resolveWith<Icon?>(

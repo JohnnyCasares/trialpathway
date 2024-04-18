@@ -74,6 +74,7 @@ class _MultipleSelectionDialogState extends State<MultipleSelectionDialog> {
             style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 30),
           ),
           CustomTextFormField(
+            hintText: 'Search',
             onChanged: (value) => filterSearch(value),
           ),
           Wrap(
@@ -129,7 +130,7 @@ class _MultipleSelectionDialogState extends State<MultipleSelectionDialog> {
                     String tmp = selected.toString().substring(1,selected.toString().length-1);
                     Navigator.pop<String>(context, tmp);
                   },
-                  child: const Text('Save')),
+                  child: const Text('Finish')),
             )
         ],
       ),
