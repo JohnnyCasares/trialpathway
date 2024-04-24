@@ -1,6 +1,6 @@
 # Clinical Trial Streamlining Application
 
-This application aims to streamline the clinical trial process by leveraging the ClinicalTrials.gov API to allow prospective patients to search for studies. The primary objectives of the app are to enhance communication, improve patient retention, and extract data for training AI models to detect points of failure in the clinical trial process.
+This application aims to streamline the clinical trial process by leveraging the ClinicalTrials.gov API to allow prospective patients to search for studies.The primary objectives of the app are to improve the recruitment process, enhance communication, improve patient retention, and extract data for training AI models to detect points of failure in the clinical trial process.
 Additionally, through data preprocessing, the app aims to provide a clean dataset where keywords are stored for the training of Natural Language Processing algorithms.
 ## Technologies Used:
 
@@ -41,7 +41,6 @@ Additionally, through data preprocessing, the app aims to provide a clean datase
     - View detailed information about each clinical trial, including trial contacts, study record dates, outcome measures, trial description, recruitment information, and administrative details.
     - Communicate with trial contacts or site personnel directly through the app.
     - Monitor and track the progress of clinical trials.
-    - Provide feedback or report issues encountered during the trial process.
 
 ## Important: Accessing the Database
 

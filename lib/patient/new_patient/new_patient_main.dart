@@ -7,7 +7,7 @@ import '../../providers/profile_provider.dart';
 import '../../widgets/my_appbar.dart';
 
 class SearchMain extends StatefulWidget {
-  const SearchMain({super.key});
+  const SearchMain({super.key,});
 
   @override
   State<SearchMain> createState() => _SearchMainState();
@@ -19,6 +19,7 @@ class _SearchMainState extends State<SearchMain> {
 
   @override
   Widget build(BuildContext context) {
+
     return ChangeNotifierProvider<ProfileProvider>(
       create: (_)=>ProfileProvider(),
       child: Scaffold(

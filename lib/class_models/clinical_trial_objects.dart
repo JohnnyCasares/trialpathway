@@ -92,14 +92,24 @@ class Outcome{
   Map<String, dynamic> toJson() => _$OutcomeToJson(this);
 
 }
-
+@JsonSerializable()
 class Sponsors{
+
+  static final List<String> columns = [
+    'agencyClass',
+    'leadOrCollaborator',
+    'name'
+  ];
   String? agencyClass;
   String? leadOrCollaborator;
   String? name;
 
   Sponsors(this.agencyClass, this.leadOrCollaborator, this.name);
 
+  factory Sponsors.fromJson(Map<String, dynamic> json) =>
+      _$SponsorsFromJson(json);
+
+  Map<String, dynamic> toJson() => _$SponsorsToJson(this);
 
 }
 

@@ -10,24 +10,44 @@ import '../class_models/patient.dart';
 import '../main.dart';
 import 'file_storage.dart';
 
-const username = String.fromEnvironment('DB_USERNAME');
-const password = String.fromEnvironment('DB_PASSWORD');
+const _username = String.fromEnvironment('DB_USERNAME');
+const _password = String.fromEnvironment('DB_PASSWORD');
 
 class DataBaseService {
   final dbEndPoint = Endpoint(
       host: 'aact-db.ctti-clinicaltrials.org',
       database: 'aact_alt',
-      username: username,
-      password: password);
+      username: _username,
+      password: _password);
 
   final connectionSetting = const ConnectionSettings(sslMode: SslMode.require);
 
-  Future<Connection> initializeDatabase() async {
-    return Connection.open(dbEndPoint, settings: connectionSetting);
+  Future<Connection> initializeDatabase({String? username, String? password}) async {
+    return Connection.open(userCredentials(username, password), settings: connectionSetting);
   }
+
+  Endpoint userCredentials(String? username, String? password){
+    if(username==null || username.isEmpty){
+      username = _username;
+    }
+    if(password==null || password.isEmpty){
+      password = _password;
+    }
+    return Endpoint(
+        host: 'aact-db.ctti-clinicaltrials.org',
+        database: 'aact_alt',
+        username: username,
+        password: password);
+  }
+
 }
 
 class DatabaseQueries {
+  Connection connection;
+
+  
+  DatabaseQueries(this.connection);
+  
   Future<List<ClinicalTrial>> getBriefStudies(int offset) async {
     String file = await FileStorageService()
         .readFile(fileName: '$offset', format: 'json');
@@ -46,7 +66,7 @@ class DatabaseQueries {
       Sql interventions = query.interventions;
       Sql eligibility = query.eligibility;
 
-      Result briefStudyRows = await getIt<Connection>().execute(briefStudy,
+      Result briefStudyRows = await connection.execute(briefStudy,
           parameters: {
             'offset': offset,
             'country_list': getIt<Patient>().country
@@ -66,19 +86,19 @@ class DatabaseQueries {
           description: columns['description'],
           officialTitle: columns['officialTitle'],
         ));
-        result[i].conditions = await getIt<Connection>().execute(conditions,
+        result[i].conditions = await connection.execute(conditions,
             parameters: {
               'nct_id': result[i].nctID
             }); //get conditions of the study
         result[i].locations =
-            await getIt<Connection>().execute(locations, parameters: {
+            await connection.execute(locations, parameters: {
           'nct_id': result[i].nctID,
         }); //get locations of the study
-        result[i].interventionType = await getIt<Connection>()
+        result[i].interventionType = await connection
             .execute(interventions, parameters: {
           'nct_id': result[i].nctID
         }); //get locations of the study
-        Result eligibilityQuery = await getIt<Connection>()
+        Result eligibilityQuery = await connection
             .execute(eligibility, parameters: {'nct_id': result[i].nctID});
 
         result[i].eligibility = Eligibility.fromJson(
@@ -102,56 +122,60 @@ class DatabaseQueries {
     //   final jsonFile = jsonDecode(file);
     //   return ClinicalTrial.fromJson(jsonFile);
     // } else {
-      FullClinicalTrialQueries query = FullClinicalTrialQueries();
-      ClinicalTrial result = clinicalTrial;
+    FullClinicalTrialQueries query = FullClinicalTrialQueries();
+    ClinicalTrial result = clinicalTrial;
 
-      Result queryDetailedDescription = await getIt<Connection>().execute(
-          query.getDetailedDescription,
-          parameters: {'nct_id': clinicalTrial.nctID});
-      result.detailedDescription =
-          queryDetailedDescription.first.first.toString();
+    Result queryDetailedDescription = await connection.execute(
+        query.getDetailedDescription,
+        parameters: {'nct_id': clinicalTrial.nctID});
+    result.detailedDescription =
+        queryDetailedDescription.first.first.toString();
 
-      Result queryIntervention = await getIt<Connection>().execute(
-          query.getIntervention,
-          parameters: {'nct_id': clinicalTrial.nctID});
+    Result queryIntervention = await connection.execute(
+        query.getIntervention,
+        parameters: {'nct_id': clinicalTrial.nctID});
 
-      Result queryDesignOutcomes = await getIt<Connection>().execute(
-          query.getDesignOutcomes,
-          parameters: {'nct_id': clinicalTrial.nctID});
+    Result queryDesignOutcomes = await connection.execute(
+        query.getDesignOutcomes,
+        parameters: {'nct_id': clinicalTrial.nctID});
 
-      Result queryContactInformation = await getIt<Connection>().execute(
-          query.getContactInformation,
-          parameters: {'nct_id': clinicalTrial.nctID});
+    Result queryContactInformation = await connection.execute(
+        query.getContactInformation,
+        parameters: {'nct_id': clinicalTrial.nctID});
 
-      Result queryContactLocations = await getIt<Connection>().execute(
-          query.getContactLocations,
-          parameters: {'nct_id': clinicalTrial.nctID});
+    Result queryContactLocations = await connection.execute(
+        query.getContactLocations,
+        parameters: {'nct_id': clinicalTrial.nctID});
 
-      Result querySponsors = await getIt<Connection>().execute(
-          query.getSponsors,
-          parameters: {'nct_id': clinicalTrial.nctID});
+    Result querySponsors = await connection.execute(query.getSponsors,
+        parameters: {'nct_id': clinicalTrial.nctID});
 
-      result.interventions = List.generate(
-          queryIntervention.length,
-          (index) => Intervention.fromJson(
-              toJson(Intervention.columns, queryIntervention[index])));
+    result.interventions = List.generate(
+        queryIntervention.length,
+        (index) => Intervention.fromJson(
+            toJson(Intervention.columns, queryIntervention[index])));
 
-      result.outcomeMeasures = List.generate(
-          queryDesignOutcomes.length,
-          (index) => Outcome.fromJson(
-              toJson(Outcome.columns, queryDesignOutcomes[index])));
+    result.outcomeMeasures = List.generate(
+        queryDesignOutcomes.length,
+        (index) => Outcome.fromJson(
+            toJson(Outcome.columns, queryDesignOutcomes[index])));
 
-      result.contactInformation = List.generate(
-          queryContactInformation.length,
-          (index) => ContactInformation.fromJson(
-              toJson(ContactInformation.columns, queryContactInformation[0])));
+    result.contactInformation = List.generate(
+        queryContactInformation.length,
+        (index) => ContactInformation.fromJson(
+            toJson(ContactInformation.columns, queryContactInformation[0])));
 
-      result.contactsLocations = List.generate(
-          queryContactLocations.length,
-          (index) => ContactLocation.fromJson(
-              toJson(ContactLocation.columns, queryContactLocations[index])));
+    result.contactsLocations = List.generate(
+        queryContactLocations.length,
+        (index) => ContactLocation.fromJson(
+            toJson(ContactLocation.columns, queryContactLocations[index])));
 
-      return result;
+    result.sponsors = List.generate(
+        querySponsors.length,
+        (index) =>
+            Sponsors.fromJson(toJson(Sponsors.columns, querySponsors[index])));
+
+    return result;
     // }
   }
 

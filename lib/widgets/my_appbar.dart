@@ -16,14 +16,16 @@ class MyAppBar extends StatefulWidget implements PreferredSizeWidget {
 }
 
 class _MyAppBarState extends State<MyAppBar> {
+ late bool isDarkMode;
+
+
   @override
   void initState() {
-    
+    isDarkMode =getIt<SharedPreferences>().getBool('isDarkMode')?? (Theme.of(context).brightness == Brightness.dark);
     super.initState();
   }
   @override
   Widget build(BuildContext context) {
-    bool isDarkMode =getIt<SharedPreferences>().getBool('isDarkMode')?? (Theme.of(context).brightness == Brightness.dark);
 
     final MaterialStateProperty<Icon?> thumbIcon =
     MaterialStateProperty.resolveWith<Icon?>(
@@ -41,26 +43,41 @@ class _MyAppBarState extends State<MyAppBar> {
       title: const Text('Trial Pathway'),
       centerTitle: true,
       actions: [
-        toggleThemeButton(isDarkMode, thumbIcon),
+        Switch(
+          thumbIcon: thumbIcon,
+          value: isDarkMode,
+          onChanged: (bool value) {
+            setState(() {
+              isDarkMode = value;
+            });
+            if (value) {
+              MyApp.of(context)!.toggleTheme(ThemeMode.light);
+            } else {
+              MyApp.of(context)!.toggleTheme(ThemeMode.dark);
+            }
+
+          },
+        )
 
       ],
 
     );
   }
 
-  toggleThemeButton(isDarkMode,thumbIcon){
-    return Switch(
-      thumbIcon: thumbIcon,
-      value: isDarkMode,
-      onChanged: (bool value) {
-        if (isDarkMode) {
-          MyApp.of(context)!.toggleTheme(ThemeMode.light);
-        } else {
-          MyApp.of(context)!.toggleTheme(ThemeMode.dark);
-        }
+}
 
-      },
-    );
+class ThemeProvider extends ChangeNotifier{
+  late bool isDark;
+  ThemeProvider(BuildContext context){
+    _setBool(context);
   }
-  
+  _setBool(BuildContext context){
+    isDark = getIt<SharedPreferences>().getBool('isDarkMode')?? (Theme.of(context).brightness == Brightness.dark);
+  }
+
+  updateIsDark(bool value){
+    isDark = value;
+    notifyListeners();
+  }
+
 }
