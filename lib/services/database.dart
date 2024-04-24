@@ -1,9 +1,11 @@
 import 'dart:convert';
 
-import 'package:hti_trialpathway/class_models/brief_clinical_trial.dart';
+import 'package:hti_trialpathway/class_models/clinical_trial.dart';
 
 import 'package:postgres/postgres.dart';
 
+import '../class_models/clinical_trial_objects.dart';
+import '../class_models/database_models/clinical_trial_queries.dart';
 import '../class_models/patient.dart';
 import '../main.dart';
 import 'file_storage.dart';
@@ -26,14 +28,14 @@ class DataBaseService {
 }
 
 class DatabaseQueries {
-
-  Future<List<BriefClinicalTrial>> getBriefStudies(int offset) async {
-    String file = await FileStorageService().readFile(fileName: '$offset', format: 'json');
+  Future<List<ClinicalTrial>> getBriefStudies(int offset) async {
+    String file = await FileStorageService()
+        .readFile(fileName: '$offset', format: 'json');
     if (file.isNotEmpty) {
       final jsonFile = jsonDecode(file);
-      List<BriefClinicalTrial> briefSummaries = [];
+      List<ClinicalTrial> briefSummaries = [];
       for (var savedStudies in jsonFile) {
-        briefSummaries.add(BriefClinicalTrial.fromJson(savedStudies));
+        briefSummaries.add(ClinicalTrial.fromJson(savedStudies));
       }
       return briefSummaries;
     } else {
@@ -44,13 +46,17 @@ class DatabaseQueries {
       Sql interventions = query.interventions;
       Sql eligibility = query.eligibility;
 
-      Result briefStudyRows = await getIt<Connection>().execute(briefStudy, parameters: {'offset':offset, 'country_list':getIt<Patient>().country});
+      Result briefStudyRows = await getIt<Connection>().execute(briefStudy,
+          parameters: {
+            'offset': offset,
+            'country_list': getIt<Patient>().country
+          });
 
-      List<BriefClinicalTrial> result = [];
+      List<ClinicalTrial> result = [];
       for (int i = 0; i < 10; i++) {
         Map<String, dynamic> columns = Map.fromIterables(
-            BriefClinicalTrial.columns.getRange(0, 7), briefStudyRows[i]);
-        result.add(BriefClinicalTrial(
+            ClinicalTrial.columns.getRange(0, 8), briefStudyRows[i]);
+        result.add(ClinicalTrial(
           nctID: columns['nctID'],
           lastDateUpdate: columns['lastDateUpdate'],
           status: columns['status'],
@@ -58,34 +64,98 @@ class DatabaseQueries {
           startDate: columns['startDate'],
           startDateType: columns['startDateType'],
           description: columns['description'],
+          officialTitle: columns['officialTitle'],
         ));
         result[i].conditions = await getIt<Connection>().execute(conditions,
             parameters: {
               'nct_id': result[i].nctID
             }); //get conditions of the study
-        result[i].locations = await getIt<Connection>().execute(locations,
-            parameters: {
-              'nct_id': result[i].nctID,
-            }); //get locations of the study
+        result[i].locations =
+            await getIt<Connection>().execute(locations, parameters: {
+          'nct_id': result[i].nctID,
+        }); //get locations of the study
         result[i].interventionType = await getIt<Connection>()
             .execute(interventions, parameters: {
           'nct_id': result[i].nctID
         }); //get locations of the study
-        Result test = await getIt<Connection>()
-            .execute(eligibility, parameters: {
-          'nct_id': result[i].nctID
-        });
-        Map<String, dynamic> test1 = Map.fromIterables(Eligibility.columns, test[0]);
-        result[i].eligibility = Eligibility.fromJson(test1);
+        Result eligibilityQuery = await getIt<Connection>()
+            .execute(eligibility, parameters: {'nct_id': result[i].nctID});
+
+        result[i].eligibility = Eligibility.fromJson(
+            toJson(Eligibility.columns, eligibilityQuery[0]));
       }
 
-
       List briefSummaries = [];
-      for (BriefClinicalTrial r in result) {
+      for (ClinicalTrial r in result) {
         briefSummaries.add(r.toJson());
       }
       FileStorageService().writeFile('$offset', json.encode(briefSummaries));
       return result;
     }
+  }
+
+  Future<ClinicalTrial> getFullClinicalTrial(
+      ClinicalTrial clinicalTrial) async {
+    String file = await FileStorageService()
+        .readFile(fileName: clinicalTrial.nctID, format: 'json');
+    // if (file.isNotEmpty) {
+    //   final jsonFile = jsonDecode(file);
+    //   return ClinicalTrial.fromJson(jsonFile);
+    // } else {
+      FullClinicalTrialQueries query = FullClinicalTrialQueries();
+      ClinicalTrial result = clinicalTrial;
+
+      Result queryDetailedDescription = await getIt<Connection>().execute(
+          query.getDetailedDescription,
+          parameters: {'nct_id': clinicalTrial.nctID});
+      result.detailedDescription =
+          queryDetailedDescription.first.first.toString();
+
+      Result queryIntervention = await getIt<Connection>().execute(
+          query.getIntervention,
+          parameters: {'nct_id': clinicalTrial.nctID});
+
+      Result queryDesignOutcomes = await getIt<Connection>().execute(
+          query.getDesignOutcomes,
+          parameters: {'nct_id': clinicalTrial.nctID});
+
+      Result queryContactInformation = await getIt<Connection>().execute(
+          query.getContactInformation,
+          parameters: {'nct_id': clinicalTrial.nctID});
+
+      Result queryContactLocations = await getIt<Connection>().execute(
+          query.getContactLocations,
+          parameters: {'nct_id': clinicalTrial.nctID});
+
+      Result querySponsors = await getIt<Connection>().execute(
+          query.getSponsors,
+          parameters: {'nct_id': clinicalTrial.nctID});
+
+      result.interventions = List.generate(
+          queryIntervention.length,
+          (index) => Intervention.fromJson(
+              toJson(Intervention.columns, queryIntervention[index])));
+
+      result.outcomeMeasures = List.generate(
+          queryDesignOutcomes.length,
+          (index) => Outcome.fromJson(
+              toJson(Outcome.columns, queryDesignOutcomes[index])));
+
+      result.contactInformation = List.generate(
+          queryContactInformation.length,
+          (index) => ContactInformation.fromJson(
+              toJson(ContactInformation.columns, queryContactInformation[0])));
+
+      result.contactsLocations = List.generate(
+          queryContactLocations.length,
+          (index) => ContactLocation.fromJson(
+              toJson(ContactLocation.columns, queryContactLocations[index])));
+
+      return result;
+    // }
+  }
+
+  Map<String, dynamic> toJson(List<String> columns, Iterable queryResult) {
+    return Map.fromIterables(columns, queryResult);
   }
 }

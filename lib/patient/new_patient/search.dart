@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:hti_trialpathway/class_models/brief_clinical_trial.dart';
+import 'package:hti_trialpathway/class_models/clinical_trial.dart';
 import 'package:hti_trialpathway/class_models/patient.dart';
+import 'package:hti_trialpathway/patient/new_patient/view_full_study.dart';
 import 'package:hti_trialpathway/services/database.dart';
 import 'package:hti_trialpathway/services/file_storage.dart';
 import 'package:hti_trialpathway/widgets/custom_textformfield.dart';
@@ -15,7 +16,7 @@ class PatientSearch extends StatefulWidget {
 }
 
 class _PatientSearchState extends State<PatientSearch> {
-  int page = 1; //TODO: REMEMBER LAST PAGE VISITED
+  int page = 1;
   late TextEditingController pageNumberController;
 
   Future refresh(int page) async {
@@ -71,7 +72,7 @@ class _PatientSearchState extends State<PatientSearch> {
                       ),
                     ));
               } else {
-                print(result.error.toString());
+
                 return Center(
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -81,9 +82,7 @@ class _PatientSearchState extends State<PatientSearch> {
               }
             } else if (result.connectionState == ConnectionState.waiting) {
               return const Center(
-                child: Center(
-                  child: CircularProgressIndicator(),
-                ),
+                child: CircularProgressIndicator(),
               );
             } else {
               return Center(
@@ -155,7 +154,7 @@ class _PatientSearchState extends State<PatientSearch> {
 class BriefSummaryCard extends StatelessWidget {
   const BriefSummaryCard({super.key, required this.briefSummary});
 
-  final BriefClinicalTrial briefSummary;
+  final ClinicalTrial briefSummary;
 
   @override
   Widget build(BuildContext context) {
@@ -163,127 +162,135 @@ class BriefSummaryCard extends StatelessWidget {
         briefSummary.eligibility!.ageEligibility(getIt<Patient>().age) &&
             briefSummary.conditionEligibility(getIt<Patient>().conditions);
 
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: Card(
-        child: SizedBox(
-          width: double.infinity,
-          child: Padding(
-            padding: const EdgeInsets.all(10.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                if (isEligible)
-                  patientQualifies(isEligible, context),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Flexible(
-                        child: Row(
+    return GestureDetector(
+      onTap: () {
+        Navigator.of(context).push(MaterialPageRoute(
+            builder: (_) => ViewFullStudy(clinicalTrial: briefSummary)));
+      },
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Card(
+          elevation: 5,
+          child: SizedBox(
+            width: double.infinity,
+            child: Padding(
+              padding: const EdgeInsets.all(10.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  if (isEligible) patientQualifies(isEligible, context),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Flexible(
+                          child: Row(
+                            children: [
+                              const Icon(
+                                Icons.circle,
+                                color: Colors.green,
+                                size: 10,
+                              ),
+                              const SizedBox(
+                                width: 5,
+                              ),
+                              Text(
+                                briefSummary.status,
+                                textAlign: TextAlign.left,
+                              ),
+                            ],
+                          ),
+                        ),
+                        Text(briefSummary.nctID),
+                      ],
+                    ),
+                  ),
+                  Center(
+                      child: Text(
+                    briefSummary.title,
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(
+                        fontSize: 20, fontWeight: FontWeight.bold),
+                  )),
+                  Text(briefSummary.description),
+                  if (briefSummary.interventionType != null &&
+                      briefSummary.interventionType!.isNotEmpty)
+                    Column(
+                      children: [
+                        const Divider(),
+                        Row(
                           children: [
-                            const Icon(
-                              Icons.circle,
-                              color: Colors.green,
-                              size: 10,
+                            const Text(
+                              'Type of intervention:\t',
+                              style: TextStyle(fontWeight: FontWeight.bold),
                             ),
-                            const SizedBox(
-                              width: 5,
-                            ),
-                            Text(
-                              briefSummary.status,
-                              textAlign: TextAlign.left,
-                            ),
+                            Wrap(
+                                direction: Axis.horizontal,
+                                children: briefSummary.interventionType!
+                                    .map(
+                                        (intervention) => Text(intervention[0]))
+                                    .toList()),
                           ],
                         ),
-                      ),
-                      Text(briefSummary.nctID),
-                    ],
-                  ),
-                ),
-                Center(
-                    child: Text(
-                  briefSummary.title,
-                  textAlign: TextAlign.center,
-                  style: const TextStyle(
-                      fontSize: 20, fontWeight: FontWeight.bold),
-                )),
-                Text(briefSummary.description),
-                if (briefSummary.interventionType != null &&
-                    briefSummary.interventionType!.isNotEmpty)
-                  Column(
-                    children: [
-                      const Divider(),
-                      Row(
-                        children: [
-                          const Text(
-                            'Type of intervention:\t',
-                            style: TextStyle(fontWeight: FontWeight.bold),
+                      ],
+                    ),
+                  const Divider(),
+                  if (briefSummary.conditions != null)
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text(
+                          'Conditions',
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
                           ),
-                          Wrap(
-                              direction: Axis.horizontal,
-                              children: briefSummary.interventionType!
-                                  .map((intervention) => Text(intervention[0]))
-                                  .toList()),
-                        ],
-                      ),
-                    ],
-                  ),
-                const Divider(),
-                if (briefSummary.conditions != null)
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Text(
-                        'Conditions',
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
                         ),
-                      ),
-                      Wrap(
-                          direction: Axis.horizontal,
-                          children: briefSummary.conditions!
-                              .map((item) => Card(
+                        Wrap(
+                            direction: Axis.horizontal,
+                            children: briefSummary.conditions!
+                                .map((item) => Card(
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .primaryContainer,
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(3.0),
+                                      child: Text(
+                                        item[0],
+                                      ),
+                                    )))
+                                .toList()),
+                      ],
+                    ),
+                  if (briefSummary.locations != null)
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Divider(),
+                        const Text('Location:',
+                            style: TextStyle(fontWeight: FontWeight.bold)),
+                        Wrap(direction: Axis.horizontal, children: [
+                          ...briefSummary.locations!.take(5).map((location) =>
+                              Card(
                                   color: Theme.of(context)
                                       .colorScheme
-                                      .primaryContainer,
+                                      .surfaceVariant,
                                   child: Padding(
                                     padding: const EdgeInsets.all(3.0),
-                                    child: Text(
-                                      item[0],
-                                    ),
-                                  )))
-                              .toList()),
-                    ],
-                  ),
-                if (briefSummary.locations != null)
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Divider(),
-                      const Text('Location:',
-                          style: TextStyle(fontWeight: FontWeight.bold)),
-                      Wrap(direction: Axis.horizontal, children: [
-                        ...briefSummary.locations!.take(5).map((location) =>
-                            Card(
-                                color: Theme.of(context)
-                                    .colorScheme
-                                    .surfaceVariant,
-                                child: Padding(
-                                  padding: const EdgeInsets.all(3.0),
-                                  child: Text('${location[0]}, ${location[1]}'),
-                                ))),
-                        if (briefSummary.locations!.length > 5)
-                          const Padding(
-                            padding: EdgeInsets.all(3.0),
-                            child: Text('...'),
-                          ),
-                      ]),
-                    ],
-                  ),
-              ],
+                                    child:
+                                        Text('${location[0]}, ${location[1]}'),
+                                  ))),
+                          if (briefSummary.locations!.length > 5)
+                            const Padding(
+                              padding: EdgeInsets.all(3.0),
+                              child: Text('...'),
+                            ),
+                        ]),
+                      ],
+                    ),
+                ],
+              ),
             ),
           ),
         ),
