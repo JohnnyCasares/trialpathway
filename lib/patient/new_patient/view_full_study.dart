@@ -7,7 +7,7 @@ import '../../providers/db_provider.dart';
 import '../../services/database.dart';
 
 class ViewFullStudy extends StatelessWidget {
-  const ViewFullStudy({super.key, required this.clinicalTrial, });
+  const ViewFullStudy({super.key, required this.clinicalTrial});
 
   final ClinicalTrial clinicalTrial;
 

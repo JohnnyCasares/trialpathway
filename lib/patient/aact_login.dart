@@ -48,7 +48,7 @@ class _AACTLoginState extends State<AACTLogin> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         const Text("Don't have an account yet?"),
-                        SizedBox(width: 15,),
+                        const SizedBox(width: 15,),
                         TextButton(onPressed: ()async{
                           final Uri url = Uri.parse('https://aact.ctti-clinicaltrials.org');
                           if (!await launchUrl(
