@@ -147,23 +147,23 @@ class ViewFullStudy extends StatelessWidget {
   TableRow intervention(Intervention intervention) {
     return TableRow(children: [
       Text('${intervention.type}'),
-      Text('${intervention.name!}'),
-      Text('${intervention.description!}'),
+      Text('${intervention.name}'),
+      Text('${intervention.description}'),
     ]);
   }
 
   TableRow outcome(Outcome outcome) {
     return TableRow(children: [
-      Text('${outcome.outComeType!}'),
-      Text('${outcome.outComeDescription!}'),
+      Text('${outcome.outComeType}'),
+      Text('${outcome.outComeDescription}'),
     ]);
   }
 
   TableRow contactInformation(ContactInformation contactInformation) {
     return TableRow(children: [
-      Text('${contactInformation.name!}'),
-      Text('${contactInformation.phone!}'),
-      Text('${contactInformation.email!}'),
+      Text('${contactInformation.name}'),
+      Text('${contactInformation.phone}'),
+      Text('${contactInformation.email}'),
     ]);
   }
 
