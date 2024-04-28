@@ -116,8 +116,8 @@ class DatabaseQueries {
 
   Future<ClinicalTrial> getFullClinicalTrial(
       ClinicalTrial clinicalTrial) async {
-    String file = await FileStorageService()
-        .readFile(fileName: clinicalTrial.nctID, format: 'json');
+    // String file = await FileStorageService()
+    //     .readFile(fileName: clinicalTrial.nctID, format: 'json');
     // if (file.isNotEmpty) {
     //   final jsonFile = jsonDecode(file);
     //   return ClinicalTrial.fromJson(jsonFile);
@@ -128,8 +128,10 @@ class DatabaseQueries {
     Result queryDetailedDescription = await connection.execute(
         query.getDetailedDescription,
         parameters: {'nct_id': clinicalTrial.nctID});
-    result.detailedDescription =
-        queryDetailedDescription.first.first.toString();
+    if(queryDetailedDescription.isNotEmpty) {
+      result.detailedDescription =
+          queryDetailedDescription.first.first.toString();
+    }
 
     Result queryIntervention = await connection.execute(
         query.getIntervention,
