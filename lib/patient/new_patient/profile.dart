@@ -49,253 +49,249 @@ class _ProfileState extends State<Profile> {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(10.0),
-      child: SingleChildScrollView(
-        physics: const ClampingScrollPhysics(),
-        child: Center(
-          child: SizedBox(
-            width: 600,
-            child: Form(
-              key: _formKey,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  //personal info: name, age, sex
-                  const Text(
-                    'Personal Information',
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                  ),
-                  ProfileTile(
-                      title: 'Name',
-                      field: CustomTextFormField(
-                        onChanged: (value) {
-                          if (value != _patient.name) {
-                            context.read<ProfileProvider>().didNameChange(true);
-                          } else {
-                            context
-                                .read<ProfileProvider>()
-                                .didNameChange(false);
-                          }
-                          // // Update profileChange whenever any field changes
-                          context.read<ProfileProvider>().didProfileChange();
-                        },
-                        onSaved: (value) {
-                          setState(() {
-                            _patient.name = value!;
-                          });
-                        },
-                        controller: _name,
-                      )),
-                  ProfileTile(
-                      title: 'Age',
-                      field: CustomTextFormField(
-                        onChanged: (value) {
-                          if (value != _patient.age.toString()) {
-                            context.read<ProfileProvider>().didAgeChange(true);
-                          } else {
-                            context.read<ProfileProvider>().didAgeChange(false);
-                          }
-                          context.read<ProfileProvider>().didProfileChange();
-                        },
-                        onSaved: (value) {
-                          if (value != null) {
-                            setState(() {
-                              _patient.age = int.parse(value);
-                            });
-                          }
-                        },
-                        controller: _age,
-                      )),
-                  ProfileTile(
-                    title: 'Sex',
-                    field: Row(
-                      children: <Widget>[
-                        Radio(
-                          // initialValue: _selectedSex,
-                          value: Sex.male,
-                          groupValue: _selectedSex,
-                          onChanged: (value) {
-                            setState(() {
-                              _selectedSex = value!;
-                            });
-                            if (value != _patient.sex) {
-                              context
-                                  .read<ProfileProvider>()
-                                  .didSexChange(true);
-                            } else {
-                              context
-                                  .read<ProfileProvider>()
-                                  .didSexChange(false);
-                            }
-                            context.read<ProfileProvider>().didProfileChange();
-                          },
+    return Consumer<ProfileProvider>(
+      builder: (context, profileProvider, _) {
+        return Padding(
+          padding: const EdgeInsets.all(10.0),
+          child: SingleChildScrollView(
+            physics: const ClampingScrollPhysics(),
+            child: Center(
+              child: SizedBox(
+                width: 600,
+                child: Form(
+                  key: _formKey,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      //personal info: name, age, sex
+                      const Text(
+                        'Personal Information',
+                        style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                      ),
+                      ProfileTile(
+                          title: 'Name',
+                          field: CustomTextFormField(
+                            onChanged: (value) {
+                              if (value != _patient.name) {
+                                profileProvider.didNameChange(true);
+                              } else {
+                                context
+                                    .read<ProfileProvider>()
+                                    .didNameChange(false);
+                              }
+                              // // Update profileChange whenever any field changes
+                              profileProvider.didProfileChange();
+                            },
+                            onSaved: (value) {
+                              setState(() {
+                                _patient.name = value!;
+                              });
+                            },
+                            controller: _name,
+                          )),
+                      ProfileTile(
+                          title: 'Age',
+                          field: CustomTextFormField(
+                            onChanged: (value) {
+                              if (value != _patient.age.toString()) {
+                                profileProvider.didAgeChange(true);
+                              } else {
+                                profileProvider.didAgeChange(false);
+                              }
+                              profileProvider.didProfileChange();
+                            },
+                            onSaved: (value) {
+                              if (value != null) {
+                                setState(() {
+                                  _patient.age = int.parse(value);
+                                });
+                              }
+                            },
+                            controller: _age,
+                          )),
+                      ProfileTile(
+                        title: 'Sex',
+                        field: Row(
+                          children: <Widget>[
+                            Radio(
+                              // initialValue: _selectedSex,
+                              value: Sex.male,
+                              groupValue: _selectedSex,
+                              onChanged: (value) {
+                                setState(() {
+                                  _selectedSex = value!;
+                                });
+                                if (value != _patient.sex) {
+                                 profileProvider
+                                      .didSexChange(true);
+                                } else {
+                                 profileProvider
+                                      .didSexChange(false);
+                                }
+                                profileProvider.didProfileChange();
+                              },
+                            ),
+                            const Text('Male'),
+                            Radio(
+                              // initialValue: _selectedSex,
+                              value: Sex.female,
+                              groupValue: _selectedSex,
+                              onChanged: (value) {
+                                setState(() {
+                                  _selectedSex = value!;
+                                });
+                                if (value != _patient.sex) {
+                                 profileProvider
+                                      .didSexChange(true);
+                                } else {
+                                 profileProvider
+                                      .didSexChange(false);
+                                }
+                                profileProvider.didProfileChange();
+                              },
+                            ),
+                            const Text('Female'),
+                          ],
                         ),
-                        const Text('Male'),
-                        Radio(
-                          // initialValue: _selectedSex,
-                          value: Sex.female,
-                          groupValue: _selectedSex,
-                          onChanged: (value) {
+                      ),
+                      ProfileTile(
+                          title: 'Country',
+                          onTap: () async {
+                            await chooseCountry(context,profileProvider);
+                          },
+                          field: CustomTextFormField(
+                            readOnly: true,
+                            controller: _country,
+                            onSaved: (value) {
+                              setState(() {
+                                _patient.country = value!;
+                              });
+                            },
+                            onTap: () async {
+                              await chooseCountry(context,profileProvider);
+                            },
+                          )),
+                      if (_country.text == 'United States')
+                        ProfileTile(
+                            title: 'State',
+                            field: CustomTextFormField(
+                              controller: _state,
+                              onChanged: (value) {
+                                if (value != _patient.state) {
+                                  profileProvider
+                                      .didStateChange(true);
+                                } else {
+                                  profileProvider
+                                      .didStateChange(false);
+                                }
+                                profileProvider.didProfileChange();
+                              },
+                            )),
+                      //clinical info: health? conditions, pregnancy,
+                      const Text('Clinical and Medical Information',
+                          style:
+                              TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+                      CheckboxListTile(
+                          title: const Text('Healthy'),
+                          value: _healthy,
+                          onChanged: (val) {
+
                             setState(() {
-                              _selectedSex = value!;
+                              _healthy = val!;
                             });
-                            if (value != _patient.sex) {
-                              context
-                                  .read<ProfileProvider>()
-                                  .didSexChange(true);
+                            if (val != _patient.healthy) {
+                              profileProvider
+                                  .didHealthyChange(true);
                             } else {
-                              context
-                                  .read<ProfileProvider>()
-                                  .didSexChange(false);
+                              profileProvider
+                                  .didHealthyChange(false);
                             }
-                            context.read<ProfileProvider>().didProfileChange();
+                            profileProvider.didProfileChange();
+
+                          }),
+                      ProfileTile(
+                          title: 'Conditions',
+                          onTap: () async {
+                            await chooseCondition(context,profileProvider);
                           },
-                        ),
-                        const Text('Female'),
-                      ],
-                    ),
-                  ),
-                  ProfileTile(
-                      title: 'Country',
-                      onTap: () async {
-                        await chooseCountry(context);
-                      },
-                      field: CustomTextFormField(
-                        readOnly: true,
-                        controller: _country,
-                        onSaved: (value) {
-                          setState(() {
-                            _patient.country = value!;
-                          });
-                        },
-                        onTap: () async {
-                          await chooseCountry(context);
-                        },
-                      )),
-                  if (_country.text == 'United States')
-                    ProfileTile(
-                        title: 'State',
-                        field: CustomTextFormField(
-                          controller: _state,
-                          onChanged: (value) {
-                            if (value != _patient.state) {
-                              context
-                                  .read<ProfileProvider>()
-                                  .didStateChange(true);
-                            } else {
-                              context
-                                  .read<ProfileProvider>()
-                                  .didStateChange(false);
-                            }
-                            context.read<ProfileProvider>().didProfileChange();
-                          },
+                          field: CustomTextFormField(
+                            readOnly: true,
+                            controller: _conditions,
+                            onSaved: (value) {
+                              setState(() {
+                                _patient.conditions = value!.split(',');
+                              });
+                            },
+                            onTap: () async {
+                              await chooseCondition(context,profileProvider);
+                            },
+                            hintText:
+                                'Choose any condition or illness you may have',
+                          )),
+                      //only show if women
+                      if (_selectedSex == Sex.female)
+                        CheckboxListTile(
+                            title: const Text('Pregnant'),
+                            value: _pregnant,
+                            onChanged: (val) {
+                              setState(() {
+                                _pregnant = val!;
+                              });
+                              if (val != _patient.pregnant) {
+                                context
+                                    .read<ProfileProvider>()
+                                    .didPregnantChange(true);
+                              } else {
+                                context
+                                    .read<ProfileProvider>()
+                                    .didPregnantChange(false);
+                              }
+                              profileProvider.didProfileChange();
+
+                            }),
+
+                      Padding(
+                        padding: const EdgeInsets.all(20.0),
+                        child: Center(
+                            child: ActionChip(
+                          label: const Text('Save'),
+                          onPressed: context.watch<ProfileProvider>().profileChange
+                              ? () {
+                                  saveChanges(profileProvider);
+                                }
+                              : null,
                         )),
-                  //clinical info: health? conditions, pregnancy,
-                  const Text('Clinical and Medical Information',
-                      style:
-                          TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-                  CheckboxListTile(
-                      title: const Text('Healthy'),
-                      value: _healthy,
-                      onChanged: (val) {
-
-                        setState(() {
-                          _healthy = val!;
-                        });
-                        if (val != _patient.healthy) {
-                          context
-                              .read<ProfileProvider>()
-                              .didHealthyChange(true);
-                        } else {
-                          context
-                              .read<ProfileProvider>()
-                              .didHealthyChange(false);
-                        }
-                        context.read<ProfileProvider>().didProfileChange();
-
-                      }),
-                  ProfileTile(
-                      title: 'Conditions',
-                      onTap: () async {
-                        await chooseCondition(context);
-                      },
-                      field: CustomTextFormField(
-                        readOnly: true,
-                        controller: _conditions,
-                        onSaved: (value) {
-                          setState(() {
-                            _patient.conditions = value!.split(',');
-                          });
-                        },
-                        onTap: () async {
-                          await chooseCondition(context);
-                        },
-                        hintText:
-                            'Choose any condition or illness you may have',
-                      )),
-                  //only show if women
-                  if (_selectedSex == Sex.female)
-                    CheckboxListTile(
-                        title: const Text('Pregnant'),
-                        value: _pregnant,
-                        onChanged: (val) {
-                          setState(() {
-                            _pregnant = val!;
-                          });
-                          if (val != _patient.pregnant) {
-                            context
-                                .read<ProfileProvider>()
-                                .didPregnantChange(true);
-                          } else {
-                            context
-                                .read<ProfileProvider>()
-                                .didPregnantChange(false);
-                          }
-                          context.read<ProfileProvider>().didProfileChange();
-
-                        }),
-
-                  Padding(
-                    padding: const EdgeInsets.all(20.0),
-                    child: Center(
-                        child: ActionChip(
-                      label: const Text('Save'),
-                      onPressed: context.watch<ProfileProvider>().profileChange
-                          ? () {
-                              saveChanges();
-                            }
-                          : null,
-                    )),
-                  )
-                ],
+                      )
+                    ],
+                  ),
+                ),
               ),
             ),
           ),
-        ),
-      ),
+        );
+      }
     );
   }
 
-  void saveChanges() {
+  void saveChanges(ProfileProvider profileProvider) {
     if (_formKey.currentState!.validate()) {
-      if(context.read<ProfileProvider>().sex){
+      if(profileProvider.sex){
         _patient.sex = _selectedSex;
       }
-      if(context.read<ProfileProvider>().healthy){
+      if(profileProvider.healthy){
         _patient.healthy = _healthy;
       }
-      if(context.read<ProfileProvider>().pregnant){
+      if(profileProvider.pregnant){
         _patient.pregnant = _pregnant;
       }
       _formKey.currentState!.save();
-      context.read<ProfileProvider>().didProfileChange();
-      context.read<ProfileProvider>().resetProfileProvider();
+      profileProvider.didProfileChange();
+      profileProvider.resetProfileProvider();
     }
   }
 
-  Future<void> chooseCountry(BuildContext context) async {
+  Future<void> chooseCountry(BuildContext context,ProfileProvider profileProvider) async {
     String tmp =
         (await _generalData.countriesDialog(context) ?? _country.text).trim();
     setState(() {
@@ -303,15 +299,15 @@ class _ProfileState extends State<Profile> {
     });
     if(context.mounted) {
       if (tmp != _patient.country) {
-        context.read<ProfileProvider>().didCountryChange(true);
+        profileProvider.didCountryChange(true);
       } else {
-        context.read<ProfileProvider>().didCountryChange(false);
+        profileProvider.didCountryChange(false);
       }
-      context.read<ProfileProvider>().didProfileChange();
+      profileProvider.didProfileChange();
     }
   }
 
-  Future<void> chooseCondition(BuildContext context) async {
+  Future<void> chooseCondition(BuildContext context,ProfileProvider profileProvider) async {
     String oldValue = _patient.conditions
         .toString()
         .substring(1, _patient.conditions
@@ -327,11 +323,11 @@ class _ProfileState extends State<Profile> {
     });
     if (context.mounted) {
       if (oldValue != tmp) {
-        context.read<ProfileProvider>().didConditionsChange(true);
+        profileProvider.didConditionsChange(true);
       } else {
-        context.read<ProfileProvider>().didConditionsChange(false);
+        profileProvider.didConditionsChange(false);
       }
-      context.read<ProfileProvider>().didProfileChange();
+      profileProvider.didProfileChange();
     }
   }
 
