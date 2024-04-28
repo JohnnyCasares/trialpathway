@@ -21,7 +21,7 @@ class _MyAppBarState extends State<MyAppBar> {
 
   @override
   void initState() {
-    isDarkMode =getIt<SharedPreferences>().getBool('isDarkMode')?? (Theme.of(context).brightness == Brightness.dark);
+    isDarkMode = !(getIt<SharedPreferences>().getBool('isDarkMode')?? (Theme.of(context).brightness == Brightness.dark));
     super.initState();
   }
   @override
@@ -50,6 +50,7 @@ class _MyAppBarState extends State<MyAppBar> {
             setState(() {
               isDarkMode = value;
             });
+
             if (value) {
               MyApp.of(context)!.toggleTheme(ThemeMode.light);
             } else {
@@ -66,18 +67,18 @@ class _MyAppBarState extends State<MyAppBar> {
 
 }
 
-class ThemeProvider extends ChangeNotifier{
-  late bool isDark;
-  ThemeProvider(BuildContext context){
-    _setBool(context);
-  }
-  _setBool(BuildContext context){
-    isDark = getIt<SharedPreferences>().getBool('isDarkMode')?? (Theme.of(context).brightness == Brightness.dark);
-  }
-
-  updateIsDark(bool value){
-    isDark = value;
-    notifyListeners();
-  }
-
-}
+// class ThemeProvider extends ChangeNotifier{
+//   late bool isDark;
+//   ThemeProvider(BuildContext context){
+//     _setBool(context);
+//   }
+//   _setBool(BuildContext context){
+//     isDark = getIt<SharedPreferences>().getBool('isDarkMode')?? (Theme.of(context).brightness == Brightness.dark);
+//   }
+//
+//   updateIsDark(bool value){
+//     isDark = value;
+//     notifyListeners();
+//   }
+//
+// }

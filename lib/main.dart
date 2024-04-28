@@ -3,7 +3,6 @@ import 'package:get_it/get_it.dart';
 import 'package:hti_trialpathway/providers/db_provider.dart';
 import 'package:hti_trialpathway/theme/color_schemes.g.dart';
 import 'package:hti_trialpathway/user_type.dart';
-import 'package:hti_trialpathway/widgets/my_appbar.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -63,9 +62,7 @@ class _MyAppState extends State<MyApp> {
         Provider(
           create: (_) => DBProvider(),
         ),
-        Provider(
-          create: (context) => ThemeProvider(context),
-        )
+
       ],
       child: MaterialApp(
         title: 'Trial Pathway',
