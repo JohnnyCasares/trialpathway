@@ -1,44 +1,31 @@
 import 'dart:convert';
 
+import 'package:http/http.dart' as http;
+
 class BartSummarize {
   final String url =
       'https://api-inference.huggingface.co/models/facebook/bart-large-cnn';
   final String accessToken = const String.fromEnvironment('ACCESS_TOKEN');
 
-  dataToSummarize(String text) async{
-    String data =  jsonEncode({
+  Future<String> summarizeText(String text) async {
+    final Map<String, dynamic> requestData = {
       "inputs": text,
       "parameters": {"max_length": 300, "min_length": 100}
-    });
-    Map config = {
-      'method': 'post',
-      'url': url,
-      'headers': {
-        'Content-Type': 'application/json',
-        'Authorization': accessToken
-      },
-      data: data
     };
-    //  try {
-//     //actual api call
-//     const response = await axios.request(config);
-//     //The "await" keyword pauses the execution of the function until the axios request is completed
-//     return (response.data[0].summary_text);
-//   }
-//   catch (error) {
-//     console.log(error);
-//   }
-//
-//
-// }
-
-
+    final String jsonData = json.encode(requestData);
+    final response = await http.post(
+      Uri.parse(url),
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $accessToken'
+      },
+      body: jsonData,
+    );
+    if (response.statusCode == 200) {
+      final responseData = json.decode(response.body);
+      return responseData[0]['summary_text'];
+    } else {
+      throw Exception('Failed to summarize text: ${response.statusCode}');
+    }
   }
-
-
-
-
-
-
-
 }
