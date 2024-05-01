@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 class CustomTextFormField extends StatefulWidget {
   const CustomTextFormField({
     super.key,
@@ -7,8 +8,16 @@ class CustomTextFormField extends StatefulWidget {
     this.helperText,
     this.validator,
     this.textAlign = TextAlign.start,
-    this.isPassword = false, this.keyboardType, this.onChanged, this.onEditingCompleted, this.onSaved, this.readOnly =false, this.onTap,
+    this.isPassword = false,
+    this.keyboardType,
+    this.onChanged,
+    this.onEditingCompleted,
+    this.onSaved,
+    this.readOnly = false,
+    this.onTap,
+    this.multiLine = false, this.maxChar,
   });
+
   final String? hintText;
   final TextEditingController? controller;
   final String? helperText;
@@ -21,12 +30,17 @@ class CustomTextFormField extends StatefulWidget {
   final Function(String?)? onSaved;
   final Function()? onTap;
   final bool readOnly;
+  final bool multiLine;
+  final int? maxChar;
+
   @override
   State<CustomTextFormField> createState() => _CustomTextFormFieldState();
 }
+
 class _CustomTextFormFieldState extends State<CustomTextFormField> {
   late bool visibility;
   IconData visibilityIcon = Icons.visibility;
+
   @override
   void initState() {
     visibility = widget.isPassword;
@@ -36,8 +50,11 @@ class _CustomTextFormFieldState extends State<CustomTextFormField> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(10.0),
+      padding: const EdgeInsets.only(top:10.0, bottom: 10.0),
       child: TextFormField(
+        maxLength: widget.maxChar,
+
+        maxLines: widget.multiLine?null:1,
         keyboardType: widget.keyboardType,
         textAlign: widget.textAlign,
         validator: widget.validator ?? defaultValidator,
@@ -51,17 +68,16 @@ class _CustomTextFormFieldState extends State<CustomTextFormField> {
         decoration: InputDecoration(
             suffixIcon: widget.isPassword
                 ? IconButton(
-              onPressed: visibilityToggle,
-              icon: Icon(visibilityIcon),
-            )
+                    onPressed: visibilityToggle,
+                    icon: Icon(visibilityIcon),
+                  )
                 : null,
             helperMaxLines: 3,
             helperText: widget.helperText,
-            label: widget.hintText!=null?Text(widget.hintText!):null,
+            label: widget.hintText != null ? Text(widget.hintText!) : null,
             hintText: widget.hintText,
             border:
-            OutlineInputBorder(borderRadius: BorderRadius.circular(16))),
-
+                OutlineInputBorder(borderRadius: BorderRadius.circular(16))),
       ),
     );
   }

@@ -31,7 +31,7 @@ class _ViewFullStudyState extends State<ViewFullStudy> {
           setState(() {
             loading=true;
           });
-          String tmp = await BartSummarize().summarizeText(widget.clinicalTrial.detailedDescription ??
+          String tmp = await BartSummarize().summarizeText(text:widget.clinicalTrial.detailedDescription ??
               widget.clinicalTrial.description);
           setState(() {
             loading = false;

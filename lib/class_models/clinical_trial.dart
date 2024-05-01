@@ -52,12 +52,12 @@ class ClinicalTrial {
   List<Sponsors>? sponsors;
   ClinicalTrial({
     required this.nctID,
-    required this.lastDateUpdate,
+     this.lastDateUpdate,
     required this.status,
     required this.title,
     required this.officialTitle,
-    required this.startDate,
-    required this.startDateType,
+     this.startDate,
+     this.startDateType,
     required this.description,
     this.locations,
     this.interventionType,
