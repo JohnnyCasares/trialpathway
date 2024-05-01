@@ -61,7 +61,7 @@ class _ViewFullStudyState extends State<ViewFullStudy> {
                       ),
                       if(loading||summary!=null)
                       Padding(
-                        padding: EdgeInsets.all(15),
+                        padding: const EdgeInsets.all(15),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
@@ -72,11 +72,11 @@ class _ViewFullStudyState extends State<ViewFullStudy> {
                             Container(
                               padding: const EdgeInsets.all(10),
                               decoration: BoxDecoration(
-                                  border: Border.all(color: Theme.of(context).colorScheme.tertiaryContainer),
+                                  border: Border.all(color: Theme.of(context).colorScheme.primary),
                                   borderRadius: BorderRadius.circular(10)
                               ),
                               child: AnimatedTextKit(
-                                totalRepeatCount: 1,
+                                isRepeatingAnimation: false,
                                 animatedTexts: [
                                   TyperAnimatedText(summary!)
                                 ],

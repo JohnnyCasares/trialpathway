@@ -67,8 +67,8 @@ class _MyAppState extends State<MyApp> {
       child: MaterialApp(
         title: 'Trial Pathway',
         themeMode: themeMode,
-        theme: CustomTheme.lightColorScheme,
-        darkTheme: CustomTheme.darkColorScheme,
+        theme: CustomTheme().light(),
+        darkTheme: CustomTheme().dark(),
         home: UserType(),
       ),
     );

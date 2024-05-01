@@ -261,11 +261,11 @@ class BriefSummaryCard extends StatelessWidget {
                                 direction: Axis.horizontal,
                                 children: briefSummary.conditions!
                                     .map((item) => Card(
-                                        color: Theme.of(context)
-                                            .colorScheme
-                                            .primaryContainer,
+                                        // color: Theme.of(context)
+                                        //     .colorScheme
+                                        //     .primaryContainer,
                                         child: Padding(
-                                          padding: const EdgeInsets.all(3.0),
+                                          padding: const EdgeInsets.all(5.0),
                                           child: Text(
                                             item[0],
                                           ),
@@ -311,11 +311,11 @@ class BriefSummaryCard extends StatelessWidget {
   }
 
   Card patientQualifies(bool isEligible, BuildContext context) {
-    return Card(
+    return const Card(
       elevation: 0,
-      color:
-          isEligible ? Theme.of(context).colorScheme.tertiaryContainer : null,
-      child: const Row(
+      // color:
+          // isEligible ? Theme.of(context).colorScheme.tertiaryContainer : null,
+      child: Row(
         children: [
           Padding(
             padding: EdgeInsets.all(8.0),
