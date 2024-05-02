@@ -12,9 +12,19 @@ class ResearchLogin extends StatefulWidget {
 class _ResearchLoginState extends State<ResearchLogin> {
   final _formKey = GlobalKey<FormState>();
   bool valid = false;
-  TextEditingController organizationController = TextEditingController();
-  TextEditingController usernameController = TextEditingController();
-  TextEditingController passwordController = TextEditingController();
+  late TextEditingController organizationController;
+  late TextEditingController usernameController ;
+  late TextEditingController passwordController ;
+
+  @override
+  void initState() {
+    organizationController = TextEditingController(text:'test');
+    usernameController = TextEditingController(text:'test');
+    passwordController = TextEditingController(text:'test');
+    valid = true;
+    super.initState();
+  }
+
   @override
   void dispose() {
     organizationController.dispose();

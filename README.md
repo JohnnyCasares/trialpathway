@@ -10,6 +10,7 @@ Additionally, through data preprocessing, the app aims to provide a clean datase
 
 - **API Interaction:** Postman is utilized for testing and interacting with the AACT database endpoints during development to ensure proper integration and functionality.
 
+- **Artificial Intelligence** Facebook's BART NLP model is used in this application for both patients and researchers. The summary helps patients get a concise description of the study in case the ones provided fail to convey the goal and purpose of the study. In the case of the researchers, the tool is used to create a summary of the detailed description of their study.
 ## Sources:
 
 - [NCBI Bookshelf](https://www.ncbi.nlm.nih.gov/books/NBK50888/): Provides valuable insights into the clinical trial process and best practices.
