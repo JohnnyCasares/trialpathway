@@ -1,7 +1,5 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
-import 'package:hti_trialpathway/widgets/custom_textformfield.dart';
+import 'add_step.dart';
 
 class Pathway extends StatefulWidget {
   const Pathway({super.key});
@@ -11,25 +9,20 @@ class Pathway extends StatefulWidget {
 }
 
 class _PathwayState extends State<Pathway> {
-  late List<Widget> steps;
+  late List<StepPathway> steps;
 
   @override
   void initState() {
     steps = [
-      buildStep(
-          1,
-          Step(
-              title: 'Weight yourself',
-              description:
-                  'Step on a scale and measure your weight in kilograms or pounds')),
-      buildStep(
-          2,
-          Step(
-              title: 'Measure food',
-              description:
-                  'Place your food on a scale and measure the weight of your food in grams or ounces')),
-      buildStep(
-          3, Step(title: 'Drink water', description: 'Access potable water')),
+      StepPathway(
+          title: 'Weight yourself',
+          description:
+              'Step on a scale and measure your weight in kilograms or pounds'),
+      StepPathway(
+          title: 'Measure food',
+          description:
+              'Place your food on a scale and measure the weight of your food in grams or ounces'),
+      StepPathway(title: 'Drink water', description: 'Access potable water'),
     ];
     super.initState();
   }
@@ -42,52 +35,88 @@ class _PathwayState extends State<Pathway> {
         body: Center(
           child: SizedBox(
             width: 500,
-            child: ListView(
-              children: [
-                ...steps,
-                Card(
-                  child: ListTile(
-                    title: Text('New Step'),
-                    leading: Icon(Icons.add),
-                    onTap: () async{
-                      Step? newStep = await showDialog(
-                          context: context,
-                          builder: (context) {
-                            return AlertDialog(
-                              content: NewStep(),
-                            );
-                          }) as Step?;
+            child: ReorderableListView(
+              buildDefaultDragHandles: false,
+              onReorder: (int oldIndex, int newIndex) {
+                setState(() {
+                  if (oldIndex < newIndex) {
+                    newIndex -= 1;
+                  }
+                  final StepPathway item = steps.removeAt(oldIndex);
+                  steps.insert(newIndex, item);
+                });
+              },
+              children:
+                  steps.map((e) => buildStep((steps.indexOf(e)), e)).toList(),
+              footer: Card(
+                key: Key('${steps.length}'),
+                child: ListTile(
+                  title: Text('New Step'),
+                  leading: Icon(Icons.add),
+                  onTap: () async {
+                    StepPathway? newStep = await Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (_) => NewStep(
+                                  title: 'New Step',
+                                ))) as StepPathway?;
 
-                      if (newStep != null) {
-                        print('${newStep.title} ${newStep.description}');
-                        setState(() {
-                          steps.add(buildStep(4, newStep));
-                        });
-                      }
-                    },
-                  ),
+                    if (newStep != null) {
+                      print('${newStep.title} ${newStep.description}');
+                      setState(() {
+                        steps.add(newStep);
+                      });
+                    }
+                  },
                 ),
-              ],
+              ),
             ),
           ),
         ));
   }
 
-  Widget buildStep(int step, Step stepObject) {
+  Widget buildStep(int step, StepPathway stepObject) {
     return Padding(
+      key: Key(stepObject.title),
       padding: const EdgeInsets.only(top: 10, bottom: 10),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Expanded(
             child: Card(
               child: ListTile(
-                title: Text('Step $step: ${stepObject.title}'),
+                leading: ReorderableDragStartListener(
+                  index: step,
+                  child: Icon(Icons.drag_handle),
+                ),
+                title: Text('Step ${step + 1}: ${stepObject.title}'),
                 trailing: Icon(Icons.info),
+                onTap: () async{
+                  StepPathway? tmp = await Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (_) => NewStep(
+                                title: 'Edit step',
+                                step: stepObject,
+                              ))) as StepPathway?;
+
+                  if(tmp != null){
+                    setState(() {
+                      steps[step] = tmp;
+                    });
+                  }
+                },
               ),
             ),
           ),
-          ElevatedButton(onPressed: () {}, child: Icon(Icons.add)),
+          SizedBox(
+            width: 20,
+          ),
+          Tooltip(
+              message: 'Add alternative step',
+              child: ElevatedButton(
+                onPressed: () {},
+                child: Icon(Icons.add),
+              )),
         ],
       ),
     );
@@ -98,94 +127,22 @@ class _PathwayState extends State<Pathway> {
       child: ListView(
         children: [
           ListTile(
+            leading: Icon(Icons.polyline_outlined),
+            title: Text('Main'),
+          ),
+          DrawerHeader(
+            child: Text('Patients'),
+          ),
+          ListTile(
+            leading: Icon(Icons.person_outline),
             title: Text('Gregor Samsa'),
           ),
           ListTile(
+            leading: Icon(Icons.person_outline),
             title: Text('Yukio Mishima'),
           )
         ],
       ),
     );
   }
-}
-
-class NewStep extends StatefulWidget {
-  const NewStep({super.key});
-
-  @override
-  State<NewStep> createState() => _NewStepState();
-}
-
-class _NewStepState extends State<NewStep> {
-  GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  late TextEditingController _nameController;
-  late TextEditingController _descriptionController;
-
-  @override
-  void initState() {
-    super.initState();
-    _nameController = TextEditingController();
-    _descriptionController = TextEditingController();
-  }
-
-  @override
-  void dispose() {
-    _nameController.dispose();
-    _descriptionController.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Align(
-            alignment: Alignment.topRight,
-            child: IconButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                icon: Icon(Icons.close))),
-        Form(
-          key: _formKey,
-          autovalidateMode: AutovalidateMode.always,
-          child: Column(
-            children: [
-              CustomTextFormField(
-                controller: _nameController,
-                hintText: 'Title',
-              ),
-              SizedBox(height: 16),
-              CustomTextFormField(
-                controller: _descriptionController,
-                hintText: 'Description',
-                multiLine: true,
-              ),
-              SizedBox(height: 16),
-              ElevatedButton(
-                onPressed: () {
-                  if (_formKey.currentState!.validate()) {
-                    // Add logic to handle adding the step
-                    // You can handle the data here, such as saving it or passing it back to the parent widget
-                    Step step = Step(title: _nameController.text, description: _descriptionController.text);
-                    Navigator.of(context)
-                        .pop(step);
-                  }
-                },
-                child: Text('Add'),
-              ),
-            ],
-          ),
-        ),
-      ],
-    );
-  }
-}
-
-class Step {
-  String title;
-  String description;
-
-  Step({required this.title, required this.description});
 }
