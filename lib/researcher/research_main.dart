@@ -14,7 +14,7 @@ class ResearchMain extends StatefulWidget {
 class _ResearchMainState extends State<ResearchMain> {
   int pageIndex = 0;
   List<Widget> views = [Info(), Pathway(), Messaging() ];
-
+  // Researcher _researcher = Researcher(ClinicalTrial(), []);
   @override
   Widget build(BuildContext context) {
     return Scaffold(

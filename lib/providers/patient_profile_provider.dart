@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-class ProfileProvider extends ChangeNotifier {
+class PatientProfileProvider extends ChangeNotifier {
   bool sex;
   bool name;
   bool age;
@@ -11,7 +11,7 @@ class ProfileProvider extends ChangeNotifier {
   bool pregnant;
   bool profileChange;
 
-  ProfileProvider({
+  PatientProfileProvider({
     this.sex = false,
     this.name = false,
     this.age = false,

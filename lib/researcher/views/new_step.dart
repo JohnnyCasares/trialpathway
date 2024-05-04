@@ -84,7 +84,7 @@ class _NewStepState extends State<NewStep> {
                       Navigator.of(context).pop(step);
                     }
                   },
-                  child: Text('Finish'),
+                  child: Text('Save'),
                 ),
               ],
             ),
@@ -119,6 +119,9 @@ class StepPathway {
   String title;
   String description;
   List<String>? sources;
+  List<StepPathway> altSteps = [];
 
   StepPathway({required this.title, required this.description, this.sources});
+
+
 }

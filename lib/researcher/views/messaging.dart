@@ -10,6 +10,12 @@ class Messaging extends StatefulWidget {
 class _MessagingState extends State<Messaging> {
   @override
   Widget build(BuildContext context) {
-    return Text('Messaging');
+    return Column(
+      children: [
+      ],
+    );
   }
 }
+
+
+

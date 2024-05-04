@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'add_step.dart';
+import 'package:hti_trialpathway/researcher/view_alt_steps.dart';
+import 'new_step.dart';
 
 class Pathway extends StatefulWidget {
   const Pathway({super.key});
@@ -90,7 +91,7 @@ class _PathwayState extends State<Pathway> {
                 ),
                 title: Text('Step ${step + 1}: ${stepObject.title}'),
                 trailing: Icon(Icons.info),
-                onTap: () async{
+                onTap: () async {
                   StepPathway? tmp = await Navigator.push(
                       context,
                       MaterialPageRoute(
@@ -99,7 +100,7 @@ class _PathwayState extends State<Pathway> {
                                 step: stepObject,
                               ))) as StepPathway?;
 
-                  if(tmp != null){
+                  if (tmp != null) {
                     setState(() {
                       steps[step] = tmp;
                     });
@@ -111,12 +112,42 @@ class _PathwayState extends State<Pathway> {
           SizedBox(
             width: 20,
           ),
-          Tooltip(
-              message: 'Add alternative step',
-              child: ElevatedButton(
-                onPressed: () {},
-                child: Icon(Icons.add),
-              )),
+          if (steps[step].altSteps.isEmpty)
+            Tooltip(
+                message: 'Add alternative step',
+                child: ElevatedButton(
+                  onPressed: () async {
+                    StepPathway? altStep = await Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (_) =>
+                                NewStep(title: 'Alternative Step')));
+
+
+                    if (altStep != null) {
+                      setState(() {
+                        steps[step].altSteps.add(altStep);
+
+                      });
+                    }
+                  },
+                  child: Icon(Icons.add),
+                )),
+          if (steps[step].altSteps.isNotEmpty)
+            Tooltip(
+                message: 'View alternative steps',
+                child: ElevatedButton(
+                  onPressed: () async {
+                    List<StepPathway>? altSteps = await Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (_) => ViewAlternativeStep(
+                                initAltSteps: steps[step].altSteps)));
+                    print(altSteps);
+                    print(steps[step].altSteps);
+                  },
+                  child: Icon(Icons.keyboard_arrow_right),
+                )),
         ],
       ),
     );

@@ -1,5 +1,7 @@
 import 'dart:math';
 
+import 'package:hti_trialpathway/researcher/views/new_step.dart';
+
 enum Sex { male, female }
 
 class Patient {
@@ -11,7 +13,7 @@ class Patient {
   bool pregnant;
   String country;
   String state;
-
+  List<StepPathway>? pathway;
   Patient({
     required this.name,
     required this.age,
@@ -21,6 +23,7 @@ class Patient {
     required this.pregnant,
     required this.country,
     required this.state,
+    this.pathway
   });
 
   static Patient generateMockPatient() {
