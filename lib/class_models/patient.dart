@@ -13,7 +13,7 @@ class Patient {
   bool pregnant;
   String country;
   String state;
-  List<StepPathway>? pathway;
+  List<StepPathway>? pathway = [];
   Patient({
     required this.name,
     required this.age,
@@ -74,6 +74,8 @@ class Patient {
       pregnant: pregnant,
       country: country,
       state: state,
+      pathway: []
+
     );
   }
 }

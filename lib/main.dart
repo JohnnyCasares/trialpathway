@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
+import 'package:hti_trialpathway/class_models/researcher.dart';
 import 'package:hti_trialpathway/providers/db_provider.dart';
 import 'package:hti_trialpathway/theme/color_schemes.g.dart';
 import 'package:hti_trialpathway/user_type.dart';
@@ -13,6 +14,7 @@ GetIt getIt = GetIt.instance;
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   getIt.registerSingleton<Patient>(Patient.generateMockPatient());
+  getIt.registerSingleton<Researcher>(Researcher.mockResearcher());
   getIt.registerSingletonAsync<SharedPreferences>(
       () => SharedPreferences.getInstance());
   await getIt.allReady();

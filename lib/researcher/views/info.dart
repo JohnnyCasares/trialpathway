@@ -12,7 +12,8 @@ class Info extends StatefulWidget {
 }
 
 class _InfoState extends State<Info> {
-  final TextEditingController _nctIDController = TextEditingController(text: 'NCT123456');
+  final TextEditingController _nctIDController =
+      TextEditingController(text: 'NCT123456');
   final TextEditingController _titleController = TextEditingController();
   final TextEditingController _officialTitleController =
       TextEditingController();
@@ -20,8 +21,11 @@ class _InfoState extends State<Info> {
   final TextEditingController _briefDescriptionController =
       TextEditingController();
   final TextEditingController _conditionsController = TextEditingController();
+  final TextEditingController _countriesController = TextEditingController();
+
   // Add controllers for other attributes as needed
   final GeneralData _generalData = GeneralData();
+
   // Method to save form data into a ClinicalTrial object
   ClinicalTrial _saveFormData() {
     return ClinicalTrial(
@@ -87,9 +91,14 @@ class _InfoState extends State<Info> {
                           message: 'Summarize',
                           child: ElevatedButton(
                             onPressed: () async {
-                              if (_descriptionController.text.isNotEmpty && (_descriptionController.text.length >= 2000) ) {
+                              if (_descriptionController.text.isNotEmpty &&
+                                  (_descriptionController.text.length >=
+                                      2000)) {
                                 String summary = await BartSummarize()
-                                    .summarizeText(text:_descriptionController.text, minLength: 200, maxLength: 300);
+                                    .summarizeText(
+                                        text: _descriptionController.text,
+                                        minLength: 200,
+                                        maxLength: 300);
                                 setState(() {
                                   _briefDescriptionController.text = summary;
                                 });
@@ -114,17 +123,35 @@ class _InfoState extends State<Info> {
                     CustomTextFormField(
                       readOnly: true,
                       controller: _conditionsController,
-                      onSaved: (value) {
-
-                      },
+                      onSaved: (value) {},
                       onTap: () async {
-                        String? tmp = await _generalData.conditionsDialog(context);
-                        print(tmp??'No selection');
+                        String? tmp =
+                            await _generalData.conditionsDialog(context);
+                        setState(() {
+                          _conditionsController.text = tmp.toString();
+                        });
                       },
-                      hintText:
-                      'Conditions and/or illnesses related to trial',
+                      hintText: 'Conditions and/or illnesses related to trial',
                     ),
-                    // Add text fields for other attributes here
+                    CustomTextFormField(
+                      readOnly: true,
+                      controller: _countriesController,
+                      onSaved: (value) {},
+                      onTap: () async {
+                        String? tmp =
+                        await _generalData.countriesDialog(context, multipleSelection: true);
+                        setState(() {
+                          _countriesController.text = tmp.toString();
+                        });
+                      },
+                      hintText: 'Countries',
+                    ),
+                    //Eligibility criteria
+                    //ContactInformation
+                    //ContactLocation
+                    //Intervention
+                    //Outcome
+                    //Sponsors
                     SizedBox(height: 16),
                     ElevatedButton(
                       onPressed: () {

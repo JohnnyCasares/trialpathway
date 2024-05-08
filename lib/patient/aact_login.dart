@@ -43,7 +43,7 @@ class _AACTLoginState extends State<AACTLogin> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     const Text(
-                        'This login requires an account in The Clinical Trials Transformation Initiative (CTTI) enhanced AACT'),
+                        'This login requires an account in The Clinical Trials Transformation Initiative (CTTI) enhanced AACT', textAlign: TextAlign.center,),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [

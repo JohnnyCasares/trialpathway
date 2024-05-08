@@ -42,8 +42,8 @@ class _MultipleSelectionDialogState extends State<MultipleSelectionDialog> {
 
   @override
   void initState() {
-    if(widget.initialSelection!=null){
-      selected.addAll(widget.initialSelection!.map((e) => e.trim()).toList()) ;
+    if (widget.initialSelection != null) {
+      selected.addAll(widget.initialSelection!.map((e) => e.trim()).toList());
     }
     allElements = widget.elements;
     foundElements = allElements;
@@ -52,14 +52,12 @@ class _MultipleSelectionDialogState extends State<MultipleSelectionDialog> {
 
   @override
   Widget build(BuildContext context) {
-    double width = MediaQuery.of(context).size.width;
-
     return Dialog(
-      child: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Align(
+      child: Padding(
+        padding: const EdgeInsets.all(10.0),
+        child: Column(
+          children: [
+            Align(
               alignment: Alignment.topRight,
               child: IconButton(
                 onPressed: () {
@@ -68,71 +66,69 @@ class _MultipleSelectionDialogState extends State<MultipleSelectionDialog> {
                 icon: Icon(Icons.close),
               ),
             ),
-          ),
-          Text(
-            widget.title,
-            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 30),
-          ),
-          CustomTextFormField(
-            hintText: 'Search',
-            onChanged: (value) => filterSearch(value),
-          ),
-          Wrap(
-            children: selected
-                .map((e) => Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: ElevatedButton(
-                        child: Text(e),
-                        onPressed: () {
-                          setState(() {
-                            selected.remove(e);
-                            foundElements.add(e);
-                            foundElements.sort();
-                          });
-                        },
-                      ),
-                    ))
-                .toList(),
-          ),
-          Expanded(
-              child: GridView.builder(
-                  itemCount: foundElements.length,
-                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: width > 700 ? 5 : 3,
-                      crossAxisSpacing: 10,
-                      mainAxisSpacing: 10,
-                      childAspectRatio: 1),
-                  itemBuilder: (context, index) => ElevatedButton(
-                      onPressed: () {
-                        //populate selected if multiple selection is enabled
-                        if (widget.isMultipleSelection) {
-                          setState(() {
-                            selected.add(foundElements[index].trim());
-                            selected.sort();
-                            foundElements.remove(foundElements[index]);
-                          });
-                        } else {
-                          Navigator.pop<String>(context, foundElements[index]);
-                        }
-                      },
-                      style: ButtonStyle(
-                          shape:
-                              MaterialStateProperty.all<RoundedRectangleBorder>(
-                                  RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20),
-                      ))),
-                      child: Center(child: Text(foundElements[index]))))),
-          if (widget.isMultipleSelection)
-            Padding(
-              padding: const EdgeInsets.all(20.0),
-              child: ElevatedButton(
-                  onPressed: () {
-                    String tmp = selected.toString().substring(1,selected.toString().length-1);
-                    Navigator.pop<String>(context, tmp);
-                  },
-                  child: const Text('Finish')),
-            )
-        ],
+            Text(
+              widget.title,
+              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 30),
+            ),
+            CustomTextFormField(
+              hintText: 'Search',
+              onChanged: (value) => filterSearch(value),
+            ),
+            Wrap(
+              children: selected
+                  .map((e) => Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: ElevatedButton(
+                          child: Text(e),
+                          onPressed: () {
+                            setState(() {
+                              selected.remove(e);
+                              foundElements.add(e);
+                              foundElements.sort();
+                            });
+                          },
+                        ),
+                      ))
+                  .toList(),
+            ),
+            Expanded(
+                child: ListView.builder(
+                    itemCount: foundElements.length,
+                    itemBuilder: (context, index) => Padding(
+                          padding: const EdgeInsets.all(2.0),
+                          child: Card(
+                            child: ListTile(
+                                onTap: () {
+                                  //populate selected if multiple selection is enabled
+                                  if (widget.isMultipleSelection) {
+                                    setState(() {
+                                      selected.add(foundElements[index].trim());
+                                      selected.sort();
+                                      foundElements
+                                          .remove(foundElements[index]);
+                                    });
+                                  } else {
+                                    Navigator.pop<String>(
+                                        context, foundElements[index]);
+                                  }
+                                },
+                                title: Text(foundElements[index])),
+                          ),
+                        ))),
+            if (widget.isMultipleSelection)
+              Padding(
+                padding: const EdgeInsets.all(20.0),
+                child: ElevatedButton(
+                    onPressed: () {
+                      String tmp = selected
+                          .toString()
+                          .substring(1, selected.toString().length - 1);
+                      Navigator.pop<String>(context, tmp);
+                    },
+                    child: const Text('Finish')),
+              )
+          ],
+        ),
       ),
     );
   }

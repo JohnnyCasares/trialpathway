@@ -1,16 +1,24 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:hti_trialpathway/researcher/view_alt_steps.dart';
+import 'package:flutter/widgets.dart';
+import 'package:hti_trialpathway/researcher/views/view_alt_steps.dart';
+import 'package:hti_trialpathway/researcher/views/view_patient.dart';
+import '../../class_models/patient.dart';
 import 'new_step.dart';
 
-class Pathway extends StatefulWidget {
-  const Pathway({super.key});
+class ViewPathway extends StatefulWidget {
+  const ViewPathway({super.key});
 
   @override
-  State<Pathway> createState() => _PathwayState();
+  State<ViewPathway> createState() => _ViewPathwayState();
 }
 
-class _PathwayState extends State<Pathway> {
+class _ViewPathwayState extends State<ViewPathway> {
   late List<StepPathway> steps;
+  List<Patient> patients = [
+    Patient.generateMockPatient(),
+    Patient.generateMockPatient()
+  ];
 
   @override
   void initState() {
@@ -63,7 +71,7 @@ class _PathwayState extends State<Pathway> {
                                 ))) as StepPathway?;
 
                     if (newStep != null) {
-                      print('${newStep.title} ${newStep.description}');
+                      // print('${newStep.title} ${newStep.description}');
                       setState(() {
                         steps.add(newStep);
                       });
@@ -123,11 +131,9 @@ class _PathwayState extends State<Pathway> {
                             builder: (_) =>
                                 NewStep(title: 'Alternative Step')));
 
-
                     if (altStep != null) {
                       setState(() {
                         steps[step].altSteps.add(altStep);
-
                       });
                     }
                   },
@@ -155,25 +161,31 @@ class _PathwayState extends State<Pathway> {
 
   Widget drawer() {
     return Drawer(
-      child: ListView(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          ListTile(
-            leading: Icon(Icons.polyline_outlined),
-            title: Text('Main'),
-          ),
-          DrawerHeader(
-            child: Text('Patients'),
-          ),
-          ListTile(
-            leading: Icon(Icons.person_outline),
-            title: Text('Gregor Samsa'),
-          ),
-          ListTile(
-            leading: Icon(Icons.person_outline),
-            title: Text('Yukio Mishima'),
+          Text('Patients'),
+          Expanded(
+            child: ListView.builder(
+              itemCount: patients.length,
+              itemBuilder: (BuildContext context, int index) {
+                return buildPatientListTile(patients[index]);
+              },
+            ),
           )
         ],
       ),
     );
   }
+
+  ListTile buildPatientListTile(Patient patient) {
+    return ListTile(
+      onTap: (){
+        Navigator.push(context, MaterialPageRoute(builder: (_)=>ViewPatient(patient: patient)));
+      },
+      leading: Icon(Icons.person_outline),
+      title: Text(patient.name),
+    );
+  }
 }
+

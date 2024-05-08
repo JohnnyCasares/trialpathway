@@ -19,7 +19,7 @@ class GeneralData {
     return fileToList.sublist(1);
   }
 
-  Future<String?> countriesDialog(BuildContext context) async {
+  Future<String?> countriesDialog(BuildContext context, {bool multipleSelection = false}) async {
     List<String> tmp = await GeneralData().getCountries();
     String? selection;
     if (context.mounted) {
@@ -27,7 +27,7 @@ class GeneralData {
           context: context,
           builder: (c) {
             return MultipleSelectionDialog(
-                title: 'Countries', elements: tmp, isMultipleSelection: false);
+                title: 'Countries', elements: tmp, isMultipleSelection: multipleSelection);
           });
     }
 

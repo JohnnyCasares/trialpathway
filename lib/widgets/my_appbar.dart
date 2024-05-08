@@ -16,17 +16,17 @@ class MyAppBar extends StatefulWidget implements PreferredSizeWidget {
 }
 
 class _MyAppBarState extends State<MyAppBar> {
- late bool isDarkMode;
+ bool isDarkMode=false;
 
 
   @override
   void initState() {
-    isDarkMode = !(getIt<SharedPreferences>().getBool('isDarkMode')?? (Theme.of(context).brightness == Brightness.dark));
+
     super.initState();
   }
   @override
   Widget build(BuildContext context) {
-
+    isDarkMode = !(getIt<SharedPreferences>().getBool('isDarkMode') ?? (Theme.of(context).brightness == Brightness.dark));
     final MaterialStateProperty<Icon?> thumbIcon =
     MaterialStateProperty.resolveWith<Icon?>(
           (Set<MaterialState> states) {
