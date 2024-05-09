@@ -1,36 +1,59 @@
 import 'package:hti_trialpathway/class_models/clinical_trial.dart';
+import 'package:hti_trialpathway/class_models/pathway.dart';
 import 'package:hti_trialpathway/class_models/patient.dart';
-import 'package:hti_trialpathway/researcher/views/pathway.dart';
-
-import '../researcher/views/new_step.dart';
 
 class Researcher {
   ClinicalTrial clinicalTrial;
-  List<Patient>? patients = [];
-  List<List<StepPathway>> pathWays = [];
+  List<Patient> patients = [];
+  List<Pathway> pathways = [];
+
   Researcher(this.clinicalTrial, this.patients);
 
   //todo create method to update a patient's path
 
   static Researcher mockResearcher() {
-    return Researcher(
-        ClinicalTrial(
-            nctID: 'NCT123456',
-            status: 'ACTIVE',
-            title: 'Test Clinical Trial',
-            officialTitle:
-                'Full Clinical Trial Title for the Purpose of debugging',
-            description: '',
-            detailedDescription:
-                '''Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Consectetur adipiscing elit pellentesque habitant. Dolor morbi non arcu risus quis varius quam quisque. Aliquet sagittis id consectetur purus ut faucibus. Vitae semper quis lectus nulla at volutpat diam ut venenatis. At lectus urna duis convallis convallis tellus id interdum velit. Sagittis id consectetur purus ut faucibus pulvinar elementum integer enim. Mi bibendum neque egestas congue quisque egestas diam in arcu. Morbi non arcu risus quis varius quam quisque id. Euismod lacinia at quis risus sed. Donec adipiscing tristique risus nec. Vivamus at augue eget arcu dictum varius duis at. Scelerisque viverra mauris in aliquam sem fringilla ut morbi. Rhoncus aenean vel elit scelerisque mauris pellentesque pulvinar pellentesque. Aliquam purus sit amet luctus venenatis. Sodales ut eu sem integer vitae justo eget magna fermentum. Curabitur vitae nunc sed velit.
+    Pathway mockPathway = Pathway('Test pathway');
+    mockPathway.steps.addAll([
+      StepPathway(
+          title: 'Weight yourself',
+          description:
+              'Step on a scale and measure your weight in kilograms or pounds'),
+      StepPathway(
+          title: 'Measure food',
+          description:
+              'Place your food on a scale and measure the weight of your food in grams or ounces'),
+      StepPathway(title: 'Drink water', description: 'Access potable water'),
+    ]);
+    Researcher researcher = Researcher(
+      ClinicalTrial(
+          nctID: 'NCT123456',
+          status: 'ACTIVE',
+          title: 'Test Clinical Trial',
+          officialTitle:
+              'Full Clinical Trial Title for the Purpose of debugging',
+          description: '',
+          detailedDescription:
+              '''The Full Clinical Trial Title for the Purpose of Debugging is a groundbreaking study aimed at evaluating the effectiveness and safety of a novel intervention in a controlled clinical setting. This trial represents a significant step forward in our understanding of debugging methods and their potential impact on various aspects of human health. 
 
-Aenean pharetra magna ac placerat vestibulum lectus. Sed viverra tellus in hac habitasse platea dictumst vestibulum. Diam vel quam elementum pulvinar etiam non quam. Arcu dictum varius duis at consectetur lorem donec. Vel elit scelerisque mauris pellentesque. Dui nunc mattis enim ut tellus. Sollicitudin ac orci phasellus egestas tellus rutrum tellus pellentesque. Amet luctus venenatis lectus magna fringilla urna. Aliquam etiam erat velit scelerisque in dictum. Ultricies lacus sed turpis tincidunt id. Praesent semper feugiat nibh sed pulvinar proin gravida hendrerit lectus. Duis tristique sollicitudin nibh sit amet commodo nulla facilisi. Eu turpis egestas pretium aenean pharetra magna ac placerat. Scelerisque purus semper eget duis. Maecenas pharetra convallis posuere morbi leo urna molestie at elementum. Pharetra magna ac placerat vestibulum lectus mauris ultrices. Eu tincidunt tortor aliquam nulla. Orci nulla pellentesque dignissim enim sit amet venenatis. Massa placerat duis ultricies lacus. Bibendum enim facilisis gravida neque convallis a cras semper auctor.
+The primary objective of this trial is to assess the efficacy of the debugging intervention in mitigating errors and improving overall system performance. Additionally, the trial aims to evaluate the safety profile of the intervention and explore its potential side effects.
 
-Et ultrices neque ornare aenean euismod elementum. Felis bibendum ut tristique et egestas quis. Sit amet nisl purus in. Mi eget mauris pharetra et ultrices. Aliquet nibh praesent tristique magna sit amet purus gravida quis. Dictum non consectetur a erat nam at lectus urna. In nulla posuere sollicitudin aliquam ultrices sagittis. In nibh mauris cursus mattis molestie a iaculis at. Dictumst vestibulum rhoncus est pellentesque elit ullamcorper dignissim cras tincidunt. Aliquam etiam erat velit scelerisque in. Risus nec feugiat in fermentum posuere urna. Sit amet risus nullam eget felis eget nunc. In arcu cursus euismod quis viverra. Imperdiet massa tincidunt nunc pulvinar sapien. A erat nam at lectus urna duis convallis convallis tellus. Viverra suspendisse potenti nullam ac tortor vitae purus faucibus ornare.
+The trial employs a randomized, double-blind, placebo-controlled design to ensure the reliability and validity of the results. Participants are randomly assigned to either the intervention group, where they receive the debugging treatment, or the control group, where they receive a placebo. Both groups undergo regular assessments and follow-up evaluations to monitor their progress throughout the trial.
 
-Vitae tempus quam pellentesque nec nam aliquam sem et. Aenean vel elit scelerisque mauris pellentesque pulvinar pellentesque habitant. Gravida rutrum quisque non tellus orci. Sollicitudin ac orci phasellus egestas tellus rutrum tellus. Nisl suscipit adipiscing bibendum est ultricies integer. Orci sagittis eu volutpat odio facilisis mauris sit amet. Feugiat scelerisque varius morbi enim nunc faucibus a pellentesque. Amet facilisis magna etiam tempor orci eu lobortis elementum nibh. Sit amet tellus cras adipiscing enim. Id cursus metus aliquam eleifend mi in. A iaculis at erat pellentesque adipiscing commodo elit at imperdiet. Amet mauris commodo quis imperdiet massa tincidunt. Dolor sit amet consectetur adipiscing. Viverra vitae congue eu consequat ac felis donec et odio. Enim tortor at auctor urna nunc id cursus metus. Pellentesque eu tincidunt tortor aliquam. At elementum eu facilisis sed. Molestie a iaculis at erat pellentesque adipiscing. Vitae et leo duis ut diam quam nulla porttitor massa.
+The trial aims to enroll a diverse group of participants representing various demographics and backgrounds. Eligible participants must meet specific inclusion criteria and have a documented history of encountering errors in their respective systems. Participants are carefully screened to ensure their suitability for the trial and to minimize potential confounding variables.
 
-Ultrices eros in cursus turpis. Vivamus at augue eget arcu. Posuere ac ut consequat semper viverra nam libero justo. Eget felis eget nunc lobortis mattis aliquam. Nulla at volutpat diam ut venenatis tellus in. Turpis massa tincidunt dui ut ornare lectus. Ultricies lacus sed turpis tincidunt id. Leo duis ut diam quam nulla porttitor massa id neque. Natoque penatibus et magnis dis parturient montes nascetur ridiculus. Vitae sapien pellentesque habitant morbi tristique senectus et. Eget lorem dolor sed viverra ipsum nunc aliquet bibendum enim.'''),
-        [Patient.generateMockPatient(), Patient.generateMockPatient()]);
+The debugging intervention consists of a tailored approach designed to identify and rectify errors within the system. It incorporates state-of-the-art debugging techniques and tools to address a wide range of issues effectively. Participants in the intervention group receive personalized debugging sessions administered by trained professionals, whereas those in the control group receive inert placebo treatments.
+
+The trial evaluates multiple outcome measures to assess the impact of the intervention comprehensively. Key endpoints include error rates, system performance metrics, user satisfaction scores, and adverse events. These measures are systematically collected and analyzed throughout the trial to provide robust insights into the effectiveness and safety of the debugging intervention.
+
+Statistical analysis of the trial data is conducted using advanced methodologies to ensure accuracy and reliability. Comparative analyses between the intervention and control groups are performed to determine any significant differences in outcome measures. Additionally, subgroup analyses may be conducted to explore potential associations between participant characteristics and treatment effects.
+
+The trial adheres to the highest ethical standards and is conducted in accordance with relevant regulatory guidelines and principles. Participant confidentiality and privacy are strictly maintained throughout the trial, and informed consent is obtained from all participants before their enrollment. Additionally, independent ethics committees oversee the conduct of the trial to safeguard the rights and well-being of participants.
+
+The Full Clinical Trial Title for the Purpose of Debugging represents a pioneering effort to advance the field of debugging and enhance the reliability and performance of systems. By rigorously evaluating the efficacy and safety of a novel intervention, this trial aims to provide valuable insights that can inform future debugging practices and improve overall system functionality.
+                '''),
+      [Patient.generateMockPatient(), Patient.generateMockPatient()],
+    );
+    researcher.pathways.add(mockPathway);
+    return researcher;
   }
 }

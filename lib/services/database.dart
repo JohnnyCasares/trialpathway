@@ -1,7 +1,6 @@
 import 'dart:convert';
 
 import 'package:hti_trialpathway/class_models/clinical_trial.dart';
-
 import 'package:postgres/postgres.dart';
 
 import '../class_models/clinical_trial_objects.dart';

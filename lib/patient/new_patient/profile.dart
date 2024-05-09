@@ -4,6 +4,7 @@ import 'package:hti_trialpathway/main.dart';
 import 'package:hti_trialpathway/providers/patient_profile_provider.dart';
 import 'package:hti_trialpathway/widgets/custom_textformfield.dart';
 import 'package:provider/provider.dart';
+
 import '../../class_models/database_models/general_data.dart';
 
 class Profile extends StatefulWidget {

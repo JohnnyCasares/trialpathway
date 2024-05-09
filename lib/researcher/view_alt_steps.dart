@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:hti_trialpathway/researcher/views/new_step.dart';
+import 'package:hti_trialpathway/researcher/new_step.dart';
 
-import '../../widgets/custom_textformfield.dart';
+import '../class_models/pathway.dart';
+import '../widgets/custom_textformfield.dart';
 
 class ViewAlternativeStep extends StatefulWidget {
   const ViewAlternativeStep({super.key, required this.initAltSteps});

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:hti_trialpathway/class_models/patient.dart';
 
-import 'new_step.dart';
+import '../../class_models/pathway.dart';
+import '../new_step.dart';
 
 class ViewPatient extends StatefulWidget {
   const ViewPatient({super.key, required this.patient});

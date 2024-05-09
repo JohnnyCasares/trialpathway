@@ -1,10 +1,12 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
-import 'package:hti_trialpathway/researcher/views/view_alt_steps.dart';
+import 'package:hti_trialpathway/main.dart';
+import 'package:hti_trialpathway/researcher/view_alt_steps.dart';
 import 'package:hti_trialpathway/researcher/views/view_patient.dart';
+
+import '../../class_models/pathway.dart';
 import '../../class_models/patient.dart';
-import 'new_step.dart';
+import '../../class_models/researcher.dart';
+import '../new_step.dart';
 
 class ViewPathway extends StatefulWidget {
   const ViewPathway({super.key});
@@ -14,25 +16,16 @@ class ViewPathway extends StatefulWidget {
 }
 
 class _ViewPathwayState extends State<ViewPathway> {
-  late List<StepPathway> steps;
-  List<Patient> patients = [
-    Patient.generateMockPatient(),
-    Patient.generateMockPatient()
-  ];
+  final Researcher _researcher = getIt<Researcher>();
+  late List<Pathway> pathways;
+
+  late List<Patient>? patients;
+  int pathwaysIndex = 0;
 
   @override
   void initState() {
-    steps = [
-      StepPathway(
-          title: 'Weight yourself',
-          description:
-              'Step on a scale and measure your weight in kilograms or pounds'),
-      StepPathway(
-          title: 'Measure food',
-          description:
-              'Place your food on a scale and measure the weight of your food in grams or ounces'),
-      StepPathway(title: 'Drink water', description: 'Access potable water'),
-    ];
+    pathways = _researcher.pathways;
+    patients = _researcher.patients;
     super.initState();
   }
 
@@ -44,47 +37,75 @@ class _ViewPathwayState extends State<ViewPathway> {
         body: Center(
           child: SizedBox(
             width: 500,
-            child: ReorderableListView(
-              buildDefaultDragHandles: false,
-              onReorder: (int oldIndex, int newIndex) {
-                setState(() {
-                  if (oldIndex < newIndex) {
-                    newIndex -= 1;
-                  }
-                  final StepPathway item = steps.removeAt(oldIndex);
-                  steps.insert(newIndex, item);
-                });
-              },
-              children:
-                  steps.map((e) => buildStep((steps.indexOf(e)), e)).toList(),
-              footer: Card(
-                key: Key('${steps.length}'),
-                child: ListTile(
-                  title: Text('New Step'),
-                  leading: Icon(Icons.add),
-                  onTap: () async {
-                    StepPathway? newStep = await Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (_) => NewStep(
-                                  title: 'New Step',
-                                ))) as StepPathway?;
-
-                    if (newStep != null) {
-                      // print('${newStep.title} ${newStep.description}');
-                      setState(() {
-                        steps.add(newStep);
-                      });
-                    }
+            child: Builder(builder: (context) {
+              if (pathways.isNotEmpty) {
+                return buildPathwayView(context, pathways[pathwaysIndex].steps);
+              } else {
+                return ElevatedButton(
+                  child: Text('Add Pathway'),
+                  onPressed: () async {
+                    setState(() {
+                      _researcher.pathways.add(Pathway('New Pathway'));
+                      // pathways = _researcher.pathways;
+                    });
                   },
-                ),
-              ),
-            ),
+                );
+              }
+            }),
           ),
         ));
   }
 
-  Widget buildStep(int step, StepPathway stepObject) {
+  ReorderableListView buildPathwayView(
+      BuildContext context, List<StepPathway>? steps) {
+    return ReorderableListView(
+        header: Padding(
+          padding: const EdgeInsets.only(bottom: 20.0),
+          child: Wrap(
+            children: [
+              ElevatedButton(onPressed: () {}, child: Text('Pathway 1')),
+              ElevatedButton(onPressed: () {}, child: Text('Pathway 2')),
+              ElevatedButton(onPressed: () {}, child: Text('Pathway 3'))
+            ],
+          ),
+        ),
+        buildDefaultDragHandles: false,
+        onReorder: (int oldIndex, int newIndex) {
+          setState(() {
+            if (oldIndex < newIndex) {
+              newIndex -= 1;
+            }
+            final StepPathway item = steps.removeAt(oldIndex);
+            steps.insert(newIndex, item);
+          });
+        },
+        children:
+            steps!.map((e) => buildStep((steps.indexOf(e)), e, steps)).toList(),
+        footer: Card(
+          key: Key('${steps.length}'),
+          child: ListTile(
+            title: Text('New Step'),
+            leading: Icon(Icons.add),
+            onTap: () async {
+              StepPathway? newStep = await Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (_) => NewStep(
+                            title: 'New Step',
+                          ))) as StepPathway?;
+
+              if (newStep != null) {
+                // print('${newStep.title} ${newStep.description}');
+                setState(() {
+                  steps.add(newStep);
+                });
+              }
+            },
+          ),
+        ));
+  }
+
+  Widget buildStep(int step, StepPathway stepObject, List<StepPathway> steps) {
     return Padding(
       key: Key(stepObject.title),
       padding: const EdgeInsets.only(top: 10, bottom: 10),
@@ -165,14 +186,15 @@ class _ViewPathwayState extends State<ViewPathway> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text('Patients'),
-          Expanded(
-            child: ListView.builder(
-              itemCount: patients.length,
-              itemBuilder: (BuildContext context, int index) {
-                return buildPatientListTile(patients[index]);
-              },
-            ),
-          )
+          if (patients != null && patients!.length > 0)
+            Expanded(
+              child: ListView.builder(
+                itemCount: patients!.length,
+                itemBuilder: (BuildContext context, int index) {
+                  return buildPatientListTile(patients![index]);
+                },
+              ),
+            )
         ],
       ),
     );
@@ -180,12 +202,12 @@ class _ViewPathwayState extends State<ViewPathway> {
 
   ListTile buildPatientListTile(Patient patient) {
     return ListTile(
-      onTap: (){
-        Navigator.push(context, MaterialPageRoute(builder: (_)=>ViewPatient(patient: patient)));
+      onTap: () {
+        Navigator.push(context,
+            MaterialPageRoute(builder: (_) => ViewPatient(patient: patient)));
       },
       leading: Icon(Icons.person_outline),
       title: Text(patient.name),
     );
   }
 }
-

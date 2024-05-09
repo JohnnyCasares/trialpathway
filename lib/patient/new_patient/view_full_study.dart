@@ -1,11 +1,11 @@
-import 'package:flutter/cupertino.dart';
+import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:flutter/material.dart';
 import 'package:hti_trialpathway/class_models/clinical_trial.dart';
 import 'package:hti_trialpathway/class_models/clinical_trial_objects.dart';
 import 'package:hti_trialpathway/services/hugging_face.dart';
 import 'package:hti_trialpathway/widgets/my_appbar.dart';
 import 'package:provider/provider.dart';
-import 'package:animated_text_kit/animated_text_kit.dart';
+
 import '../../providers/db_provider.dart';
 import '../../services/database.dart';
 

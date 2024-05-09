@@ -1,6 +1,6 @@
 import 'dart:math';
 
-import 'package:hti_trialpathway/researcher/views/new_step.dart';
+import 'package:hti_trialpathway/class_models/pathway.dart';
 
 enum Sex { male, female }
 

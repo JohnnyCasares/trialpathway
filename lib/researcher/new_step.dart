@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
-import '../../widgets/custom_textformfield.dart';
+import '../class_models/pathway.dart';
+import '../widgets/custom_textformfield.dart';
 
 class NewStep extends StatefulWidget {
   const NewStep({super.key, required this.title, this.step});
@@ -115,13 +116,4 @@ class _NewStepState extends State<NewStep> {
   }
 }
 
-class StepPathway {
-  String title;
-  String description;
-  List<String>? sources;
-  List<StepPathway> altSteps = [];
 
-  StepPathway({required this.title, required this.description, this.sources});
-
-
-}

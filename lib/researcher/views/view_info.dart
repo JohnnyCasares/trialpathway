@@ -1,5 +1,6 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:hti_trialpathway/class_models/researcher.dart';
+import 'package:hti_trialpathway/main.dart';
 import 'package:hti_trialpathway/services/hugging_face.dart';
 
 import '../../class_models/clinical_trial.dart';
@@ -12,19 +13,29 @@ class Info extends StatefulWidget {
 }
 
 class _InfoState extends State<Info> {
-  final TextEditingController _nctIDController =
-      TextEditingController(text: 'NCT123456');
-  final TextEditingController _titleController = TextEditingController();
-  final TextEditingController _officialTitleController =
-      TextEditingController();
-  final TextEditingController _descriptionController = TextEditingController();
-  final TextEditingController _briefDescriptionController =
-      TextEditingController();
-  final TextEditingController _conditionsController = TextEditingController();
-  final TextEditingController _countriesController = TextEditingController();
+  final Researcher _researcher = getIt<Researcher>();
+  late final TextEditingController _nctIDController;
+  late final TextEditingController _titleController;
+  late final TextEditingController _officialTitleController ;
+  late final TextEditingController _descriptionController;
+  late final TextEditingController _briefDescriptionController ;
+  late final TextEditingController _conditionsController ;
+  late final TextEditingController _countriesController ;
 
   // Add controllers for other attributes as needed
   final GeneralData _generalData = GeneralData();
+
+  @override
+  void initState() {
+   _nctIDController =TextEditingController(text: _researcher.clinicalTrial.nctID);
+   _titleController= TextEditingController(text:_researcher.clinicalTrial.title);
+   _officialTitleController= TextEditingController(text:_researcher.clinicalTrial.officialTitle);
+   _descriptionController= TextEditingController(text:_researcher.clinicalTrial.detailedDescription);
+   _briefDescriptionController= TextEditingController(text:_researcher.clinicalTrial.description);
+   _conditionsController= TextEditingController();
+   _countriesController= TextEditingController();
+    super.initState();
+  }
 
   // Method to save form data into a ClinicalTrial object
   ClinicalTrial _saveFormData() {
