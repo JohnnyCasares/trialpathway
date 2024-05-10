@@ -22,7 +22,7 @@ class _ViewPathwayState extends State<ViewPathway> {
 
   late List<Patient>? patients;
   int pathwaysIndex = 0;
-  bool showActionButton = false;
+
 
   @override
   void initState() {
@@ -35,8 +35,8 @@ class _ViewPathwayState extends State<ViewPathway> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(),
-        floatingActionButton: showActionButton
-            ? FloatingActionButton(
+        floatingActionButton:
+            FloatingActionButton(
                 tooltip: 'New Pathway',
                 onPressed: () async {
                   Pathway? tmp = await showDialog(
@@ -49,7 +49,7 @@ class _ViewPathwayState extends State<ViewPathway> {
                 },
                 child: Icon(Icons.polyline_outlined),
               )
-            : null,
+            ,
         drawer: drawer(),
         body: Center(
           child: SizedBox(
@@ -67,7 +67,6 @@ class _ViewPathwayState extends State<ViewPathway> {
                     if (tmp != null) {
                       setState(() {
                         _researcher.pathways.add(tmp);
-                        showActionButton = true;
                       });
                     }
                   },

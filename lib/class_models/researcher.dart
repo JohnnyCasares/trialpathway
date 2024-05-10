@@ -53,7 +53,7 @@ The Full Clinical Trial Title for the Purpose of Debugging represents a pioneeri
                 '''),
       [Patient.generateMockPatient(), Patient.generateMockPatient()],
     );
-    // researcher.pathways.add(mockPathway);
+    researcher.pathways.add(mockPathway);
     return researcher;
   }
 }
