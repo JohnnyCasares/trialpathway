@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hti_trialpathway/patient/aact_login.dart';
 import 'package:hti_trialpathway/researcher/login_research.dart';
+import 'package:hti_trialpathway/widgets/my_appbar.dart';
 
 class UserType extends StatelessWidget {
   const UserType({super.key});
@@ -8,6 +9,7 @@ class UserType extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: MyAppBar(),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [

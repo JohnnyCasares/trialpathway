@@ -16,11 +16,13 @@ class ViewPathway extends StatefulWidget {
 }
 
 class _ViewPathwayState extends State<ViewPathway> {
+  ValueNotifier<bool> isDialOpen = ValueNotifier(false);
   final Researcher _researcher = getIt<Researcher>();
   late List<Pathway> pathways;
 
   late List<Patient>? patients;
   int pathwaysIndex = 0;
+  bool showActionButton = false;
 
   @override
   void initState() {
@@ -33,6 +35,21 @@ class _ViewPathwayState extends State<ViewPathway> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(),
+        floatingActionButton: showActionButton
+            ? FloatingActionButton(
+                tooltip: 'New Pathway',
+                onPressed: () async {
+                  Pathway? tmp = await showDialog(
+                      context: context,
+                      builder: (_) => Pathway.newPathway(context));
+                  if (tmp != null)
+                    setState(() {
+                      _researcher.pathways.add(tmp);
+                    });
+                },
+                child: Icon(Icons.polyline_outlined),
+              )
+            : null,
         drawer: drawer(),
         body: Center(
           child: SizedBox(
@@ -44,10 +61,15 @@ class _ViewPathwayState extends State<ViewPathway> {
                 return ElevatedButton(
                   child: Text('Add Pathway'),
                   onPressed: () async {
-                    setState(() {
-                      _researcher.pathways.add(Pathway('New Pathway'));
-                      // pathways = _researcher.pathways;
-                    });
+                    Pathway? tmp = await showDialog(
+                        context: context,
+                        builder: (_) => Pathway.newPathway(context));
+                    if (tmp != null) {
+                      setState(() {
+                        _researcher.pathways.add(tmp);
+                        showActionButton = true;
+                      });
+                    }
                   },
                 );
               }
@@ -62,11 +84,43 @@ class _ViewPathwayState extends State<ViewPathway> {
         header: Padding(
           padding: const EdgeInsets.only(bottom: 20.0),
           child: Wrap(
-            children: [
-              ElevatedButton(onPressed: () {}, child: Text('Pathway 1')),
-              ElevatedButton(onPressed: () {}, child: Text('Pathway 2')),
-              ElevatedButton(onPressed: () {}, child: Text('Pathway 3'))
-            ],
+            spacing: 10,
+            children: _researcher.pathways
+                .map((e) => ElevatedButton(
+                    onLongPress: () {
+                      showDialog(
+                          context: context,
+                          builder: (_) => AlertDialog(
+                                title: Text('Delete Pathway'),
+                                content: Text('Are you sure you wish to delete this pathway?'),
+                                actions: [
+                                  ElevatedButton.icon(
+                                    icon: Icon(Icons.cancel_outlined),
+                                    onPressed: () {
+                                      Navigator.pop(context);
+                                    },
+                                    label: Text('Cancel'),
+                                  ),
+                                  ElevatedButton.icon(
+                                    icon: Icon(Icons.delete_outline),
+                                    onPressed: () {
+                                      setState(() {
+                                        _researcher.pathways.remove(e);
+                                      });
+                                      Navigator.pop(context);
+                                    },
+                                    label: Text('Delete'),
+                                  )
+                                ],
+                              ));
+                    },
+                    onPressed: () {
+                      setState(() {
+                        pathwaysIndex = _researcher.pathways.indexOf(e);
+                      });
+                    },
+                    child: Text(e.name)))
+                .toList(),
           ),
         ),
         buildDefaultDragHandles: false,
@@ -134,6 +188,33 @@ class _ViewPathwayState extends State<ViewPathway> {
                       steps[step] = tmp;
                     });
                   }
+                },
+                onLongPress: () {
+                  showDialog(
+                      context: context,
+                      builder: (_) => AlertDialog(
+                        title: Text('Delete Step'),
+                        content: Text('Are you sure you wish to delete this step?'),
+                        actions: [
+                          ElevatedButton.icon(
+                            icon: Icon(Icons.cancel_outlined),
+                            onPressed: () {
+                              Navigator.pop(context);
+                            },
+                            label: Text('Cancel'),
+                          ),
+                          ElevatedButton.icon(
+                            icon: Icon(Icons.delete_outline),
+                            onPressed: () {
+                              setState(() {
+                                steps.removeAt(step);
+                              });
+                              Navigator.pop(context);
+                            },
+                            label: Text('Delete'),
+                          )
+                        ],
+                      ));
                 },
               ),
             ),
