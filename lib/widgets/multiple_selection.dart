@@ -52,20 +52,13 @@ class _MultipleSelectionDialogState extends State<MultipleSelectionDialog> {
 
   @override
   Widget build(BuildContext context) {
-    return Dialog(
-      child: Padding(
+    print(allElements);
+    return Scaffold(
+      appBar: AppBar(),
+      body: Padding(
         padding: const EdgeInsets.all(10.0),
         child: Column(
           children: [
-            Align(
-              alignment: Alignment.topRight,
-              child: IconButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                icon: Icon(Icons.close),
-              ),
-            ),
             Text(
               widget.title,
               style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 30),

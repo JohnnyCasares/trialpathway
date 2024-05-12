@@ -57,44 +57,37 @@ class ContactInformation {
 }
 
 @JsonSerializable()
-class Intervention{
-  static final List<String> columns = [
-    'name',
-    'type',
-    'description'
-  ];
- final String? name;
- final String? type;
- final String? description;
+class Intervention {
+  static final List<String> columns = ['name', 'type', 'description'];
+  final String? name;
+  final String? type;
+  final String? description;
 
-  Intervention({required this.name, required this.type, required this.description});
+  Intervention(
+      {required this.name, required this.type, required this.description});
 
   factory Intervention.fromJson(Map<String, dynamic> json) =>
       _$InterventionFromJson(json);
 
   Map<String, dynamic> toJson() => _$InterventionToJson(this);
 }
+
 @JsonSerializable()
-class Outcome{
-  static final List<String> columns = [
-    'outComeType',
-    'outComeDescription'
-  ];
+class Outcome {
+  static final List<String> columns = ['outComeType', 'outComeDescription'];
   String? outComeType;
   String? outComeDescription;
 
   Outcome({required this.outComeType, required this.outComeDescription});
 
-
   factory Outcome.fromJson(Map<String, dynamic> json) =>
       _$OutcomeFromJson(json);
 
   Map<String, dynamic> toJson() => _$OutcomeToJson(this);
-
 }
-@JsonSerializable()
-class Sponsors{
 
+@JsonSerializable()
+class Sponsors {
   static final List<String> columns = [
     'agencyClass',
     'leadOrCollaborator',
@@ -110,7 +103,6 @@ class Sponsors{
       _$SponsorsFromJson(json);
 
   Map<String, dynamic> toJson() => _$SponsorsToJson(this);
-
 }
 
 @JsonSerializable()

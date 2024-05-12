@@ -35,21 +35,21 @@ class _ViewAlternativeStepState extends State<ViewAlternativeStep> {
           child: ListView(padding: EdgeInsets.all(15), children: [
             ...altSteps.map((e) => Card(
                     child: ListTile(
-                      onTap: ()async{
-                        StepPathway? tmp = await Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (_) => NewStep(
+                  onTap: () async {
+                    StepPathway? tmp = await Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (_) => NewStep(
                                   title: 'Edit alternative step',
                                   step: e,
                                 ))) as StepPathway?;
 
-                        if (tmp != null) {
-                          setState(() {
-                            altSteps[altSteps.indexOf(e)] = tmp;
-                          });
-                        }
-                      },
+                    if (tmp != null) {
+                      setState(() {
+                        altSteps[altSteps.indexOf(e)] = tmp;
+                      });
+                    }
+                  },
                   title: Text(e.title),
                   subtitle: Text(e.description),
                   trailing: IconButton(

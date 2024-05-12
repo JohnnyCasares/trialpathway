@@ -1,50 +1,55 @@
 import 'package:flutter/material.dart';
-import 'package:hti_trialpathway/services/file_storage.dart';
+import 'package:flutter/services.dart' show rootBundle;
 
 import '../../widgets/multiple_selection.dart';
 
 class GeneralData {
-  final path = 'lib/class_models/database_models/savedData';
-
   Future<List<String>> getCountries() async {
-    final countries = await FileStorageService()
-        .readFile(fileName: 'countries', format: 'csv', customPath: path);
-    List<String> fileToList = countries.split('\n').map((e) => e.trim()).toList();
+    final String countries =
+        await rootBundle.loadString('assets/savedData/countries.csv');
+    List<String> fileToList =
+        countries.split('\n').map((e) => e.trim()).toList();
     return fileToList.sublist(1);
   }
 
   Future<List<String>> getConditions() async {
-    final conditions = await FileStorageService()
-        .readFile(fileName: 'conditions', format: 'csv', customPath: path);
-    List<String> fileToList = conditions.split('\n').map((e) => e.trim()).toList();
+    final conditions =
+        await rootBundle.loadString('assets/savedData/conditions.csv');
+    List<String> fileToList =
+        conditions.split('\n').map((e) => e.trim()).toList();
     return fileToList.sublist(1);
   }
 
-  Future<String?> countriesDialog(BuildContext context, {bool multipleSelection = false}) async {
+  Future<String?> countriesSearch(BuildContext context,
+      {bool multipleSelection = false}) async {
     List<String> tmp = await GeneralData().getCountries();
     String? selection;
     if (context.mounted) {
-      selection = await showDialog(
-          context: context,
-          builder: (c) {
-            return MultipleSelectionDialog(
-                title: 'Countries', elements: tmp, isMultipleSelection: multipleSelection);
-          });
+      selection = await Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (_) => MultipleSelectionDialog(
+                  title: 'Countries',
+                  elements: tmp,
+                  isMultipleSelection: multipleSelection)));
     }
 
     return selection;
   }
 
-  Future<String?> conditionsDialog(BuildContext context,
+  Future<String?> conditionsSearch(BuildContext context,
       {List<String>? initialSelection}) async {
     List<String> tmp = await GeneralData().getConditions();
     String? selection;
     if (context.mounted) {
-      selection = await showDialog(
-          context: context,
-          builder: (c) {
-            return MultipleSelectionDialog(title: 'Conditions', elements: tmp, initialSelection: initialSelection,);
-          });
+      selection = await Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (_) => MultipleSelectionDialog(
+                    title: 'Conditions',
+                    elements: tmp,
+                    initialSelection: initialSelection,
+                  )));
     }
     return selection;
   }

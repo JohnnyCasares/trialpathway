@@ -43,26 +43,31 @@ class _AACTLoginState extends State<AACTLogin> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     const Text(
-                        'This login requires an account in The Clinical Trials Transformation Initiative (CTTI) enhanced AACT', textAlign: TextAlign.center,),
+                      'This login requires an account in The Clinical Trials Transformation Initiative (CTTI) enhanced AACT',
+                      textAlign: TextAlign.center,
+                    ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         const Text("Don't have an account yet?"),
-                        const SizedBox(width: 15,),
-                        TextButton(onPressed: ()async{
-                          final Uri url = Uri.parse('https://aact.ctti-clinicaltrials.org');
-                          if (!await launchUrl(
-                              mode: LaunchMode.inAppBrowserView,
-                              url)) {
-                          throw Exception('Could not launch $url');
-                          }
-                        }, child: Text('Sign Up')),
+                        const SizedBox(
+                          width: 15,
+                        ),
+                        TextButton(
+                            onPressed: () async {
+                              final Uri url = Uri.parse(
+                                  'https://aact.ctti-clinicaltrials.org');
+                              if (!await launchUrl(
+                                  mode: LaunchMode.inAppBrowserView, url)) {
+                                throw Exception('Could not launch $url');
+                              }
+                            },
+                            child: Text('Sign Up')),
                       ],
                     ),
                     const SizedBox(
                       height: 20,
                     ),
-
                     CustomTextFormField(
                       hintText: 'Username',
                       controller: usernameController,
@@ -77,13 +82,13 @@ class _AACTLoginState extends State<AACTLogin> {
                       child: ElevatedButton(
                           onPressed: () async {
                             try {
-                              await context
-                                  .read<DBProvider>()
-                                  .setUpConnection(usernameController.text,
-                                      passwordController.text);
+                              await context.read<DBProvider>().setUpConnection(
+                                  usernameController.text,
+                                  passwordController.text);
                               if (context.mounted) {
-                                Navigator.of(context).pushReplacement(MaterialPageRoute(
-                                    builder: (_) => SearchMain()));
+                                Navigator.of(context).pushReplacement(
+                                    MaterialPageRoute(
+                                        builder: (_) => SearchMain()));
                               }
                             } catch (e) {
                               print(e);

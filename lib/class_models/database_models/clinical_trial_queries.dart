@@ -101,6 +101,4 @@ class FullClinicalTrialQueries {
 		SP.NAME
 	  FROM CTGOV.SPONSORS AS SP WHERE SP.NCT_ID = @nct_id;
   ''');
-
-
 }

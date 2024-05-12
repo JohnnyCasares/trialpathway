@@ -15,7 +15,8 @@ class CustomTextFormField extends StatefulWidget {
     this.onSaved,
     this.readOnly = false,
     this.onTap,
-    this.multiLine = false, this.maxChar,
+    this.multiLine = false,
+    this.maxChar,
   });
 
   final String? hintText;
@@ -50,11 +51,10 @@ class _CustomTextFormFieldState extends State<CustomTextFormField> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(top:10.0, bottom: 10.0),
+      padding: const EdgeInsets.only(top: 10.0, bottom: 10.0),
       child: TextFormField(
         maxLength: widget.maxChar,
-
-        maxLines: widget.multiLine?null:1,
+        maxLines: widget.multiLine ? null : 1,
         keyboardType: widget.keyboardType,
         textAlign: widget.textAlign,
         validator: widget.validator ?? defaultValidator,

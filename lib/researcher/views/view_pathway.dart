@@ -23,7 +23,6 @@ class _ViewPathwayState extends State<ViewPathway> {
   late List<Patient>? patients;
   int pathwaysIndex = 0;
 
-
   @override
   void initState() {
     pathways = _researcher.pathways;
@@ -35,21 +34,18 @@ class _ViewPathwayState extends State<ViewPathway> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(),
-        floatingActionButton:
-            FloatingActionButton(
-                tooltip: 'New Pathway',
-                onPressed: () async {
-                  Pathway? tmp = await showDialog(
-                      context: context,
-                      builder: (_) => Pathway.newPathway(context));
-                  if (tmp != null)
-                    setState(() {
-                      _researcher.pathways.add(tmp);
-                    });
-                },
-                child: Icon(Icons.polyline_outlined),
-              )
-            ,
+        floatingActionButton: FloatingActionButton(
+          tooltip: 'New Pathway',
+          onPressed: () async {
+            Pathway? tmp = await showDialog(
+                context: context, builder: (_) => Pathway.newPathway(context));
+            if (tmp != null)
+              setState(() {
+                _researcher.pathways.add(tmp);
+              });
+          },
+          child: Icon(Icons.polyline_outlined),
+        ),
         drawer: drawer(),
         body: Center(
           child: SizedBox(
@@ -91,7 +87,8 @@ class _ViewPathwayState extends State<ViewPathway> {
                           context: context,
                           builder: (_) => AlertDialog(
                                 title: Text('Delete Pathway'),
-                                content: Text('Are you sure you wish to delete this pathway?'),
+                                content: Text(
+                                    'Are you sure you wish to delete this pathway?'),
                                 actions: [
                                   ElevatedButton.icon(
                                     icon: Icon(Icons.cancel_outlined),
@@ -192,28 +189,29 @@ class _ViewPathwayState extends State<ViewPathway> {
                   showDialog(
                       context: context,
                       builder: (_) => AlertDialog(
-                        title: Text('Delete Step'),
-                        content: Text('Are you sure you wish to delete this step?'),
-                        actions: [
-                          ElevatedButton.icon(
-                            icon: Icon(Icons.cancel_outlined),
-                            onPressed: () {
-                              Navigator.pop(context);
-                            },
-                            label: Text('Cancel'),
-                          ),
-                          ElevatedButton.icon(
-                            icon: Icon(Icons.delete_outline),
-                            onPressed: () {
-                              setState(() {
-                                steps.removeAt(step);
-                              });
-                              Navigator.pop(context);
-                            },
-                            label: Text('Delete'),
-                          )
-                        ],
-                      ));
+                            title: Text('Delete Step'),
+                            content: Text(
+                                'Are you sure you wish to delete this step?'),
+                            actions: [
+                              ElevatedButton.icon(
+                                icon: Icon(Icons.cancel_outlined),
+                                onPressed: () {
+                                  Navigator.pop(context);
+                                },
+                                label: Text('Cancel'),
+                              ),
+                              ElevatedButton.icon(
+                                icon: Icon(Icons.delete_outline),
+                                onPressed: () {
+                                  setState(() {
+                                    steps.removeAt(step);
+                                  });
+                                  Navigator.pop(context);
+                                },
+                                label: Text('Delete'),
+                              )
+                            ],
+                          ));
                 },
               ),
             ),

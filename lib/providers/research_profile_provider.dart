@@ -5,5 +5,4 @@ class ResearchProfileProvider extends ChangeNotifier {
   Researcher researcher;
 
   ResearchProfileProvider(this.researcher);
-  
 }

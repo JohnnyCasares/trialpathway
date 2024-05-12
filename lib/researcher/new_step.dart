@@ -21,8 +21,10 @@ class _NewStepState extends State<NewStep> {
   void initState() {
     super.initState();
     _nameController = TextEditingController(text: widget.step?.title);
-    _descriptionController = TextEditingController(text: widget.step?.description);
-    sources = List.from(widget.step?.sources?.map((e) => TextEditingController(text: e)) ??[]);
+    _descriptionController =
+        TextEditingController(text: widget.step?.description);
+    sources = List.from(
+        widget.step?.sources?.map((e) => TextEditingController(text: e)) ?? []);
   }
 
   @override
@@ -81,7 +83,6 @@ class _NewStepState extends State<NewStep> {
                               ? List.from(sources.map((e) => e.text))
                               : null);
 
-
                       Navigator.of(context).pop(step);
                     }
                   },
@@ -115,5 +116,3 @@ class _NewStepState extends State<NewStep> {
     );
   }
 }
-
-

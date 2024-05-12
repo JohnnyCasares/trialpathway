@@ -7,7 +7,8 @@ class BartSummarize {
       'https://api-inference.huggingface.co/models/facebook/bart-large-cnn';
   final String accessToken = const String.fromEnvironment('ACCESS_TOKEN');
 
-  Future<String> summarizeText({required String text, int minLength=100, int maxLength = 300}) async {
+  Future<String> summarizeText(
+      {required String text, int minLength = 100, int maxLength = 300}) async {
     final Map<String, dynamic> requestData = {
       "inputs": text,
       "parameters": {"max_length": maxLength, "min_length": minLength}

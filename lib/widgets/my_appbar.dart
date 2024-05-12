@@ -6,30 +6,28 @@ import '../main.dart';
 class MyAppBar extends StatefulWidget implements PreferredSizeWidget {
   const MyAppBar({super.key});
 
-
   @override
   State<MyAppBar> createState() => _MyAppBarState();
 
   @override
-
   Size get preferredSize => const Size.fromHeight(50);
 }
 
 class _MyAppBarState extends State<MyAppBar> {
- bool isDarkMode=false;
-
+  bool isDarkMode = false;
 
   @override
   void initState() {
-
     super.initState();
   }
+
   @override
   Widget build(BuildContext context) {
-    isDarkMode = !(getIt<SharedPreferences>().getBool('isDarkMode') ?? (Theme.of(context).brightness == Brightness.dark));
+    isDarkMode = !(getIt<SharedPreferences>().getBool('isDarkMode') ??
+        (Theme.of(context).brightness == Brightness.dark));
     final MaterialStateProperty<Icon?> thumbIcon =
-    MaterialStateProperty.resolveWith<Icon?>(
-          (Set<MaterialState> states) {
+        MaterialStateProperty.resolveWith<Icon?>(
+      (Set<MaterialState> states) {
         if (states.contains(MaterialState.selected)) {
           return const Icon(Icons.light_mode_outlined);
         }
@@ -37,10 +35,11 @@ class _MyAppBarState extends State<MyAppBar> {
       },
     );
 
-
     return AppBar(
-
-      title: const Text('Trial Pathway'),
+      title: Text(
+        'Trial Pathway',
+        style: Theme.of(context).textTheme.headlineLarge,
+      ),
       centerTitle: true,
       actions: [
         Switch(
@@ -56,15 +55,11 @@ class _MyAppBarState extends State<MyAppBar> {
             } else {
               MyApp.of(context)!.toggleTheme(ThemeMode.dark);
             }
-
           },
         )
-
       ],
-
     );
   }
-
 }
 
 // class ThemeProvider extends ChangeNotifier{

@@ -10,18 +10,19 @@ class PatientProfileProvider extends ChangeNotifier {
   bool conditions;
   bool pregnant;
   bool profileChange;
+  bool visibility;
 
-  PatientProfileProvider({
-    this.sex = false,
-    this.name = false,
-    this.age = false,
-    this.country = false,
-    this.state = false,
-    this.healthy = false,
-    this.conditions = false,
-    this.pregnant = false,
-    this.profileChange = false,
-  });
+  PatientProfileProvider(
+      {this.sex = false,
+      this.name = false,
+      this.age = false,
+      this.country = false,
+      this.state = false,
+      this.healthy = false,
+      this.conditions = false,
+      this.pregnant = false,
+      this.profileChange = false,
+      this.visibility = false});
 
   void didSexChange(bool value) {
     sex = value;
@@ -63,6 +64,11 @@ class PatientProfileProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  void didVisibilityChange(bool value) {
+    visibility = value;
+    notifyListeners();
+  }
+
   void didProfileChange() {
     profileChange = sex ||
         name ||
@@ -71,7 +77,9 @@ class PatientProfileProvider extends ChangeNotifier {
         state ||
         healthy ||
         conditions ||
-        pregnant;
+        pregnant ||
+        visibility;
+
     notifyListeners();
   }
 
@@ -85,6 +93,7 @@ class PatientProfileProvider extends ChangeNotifier {
     conditions = false;
     pregnant = false;
     profileChange = false;
+    visibility = false;
     notifyListeners();
   }
 }

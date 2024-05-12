@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:hti_trialpathway/patient/new_patient/profile.dart';
-import 'package:hti_trialpathway/patient/new_patient/search.dart';
+import 'package:hti_trialpathway/patient/new_patient/view_profile.dart';
+import 'package:hti_trialpathway/patient/new_patient/view_search.dart';
 import 'package:provider/provider.dart';
 
 import '../../providers/patient_profile_provider.dart';
 import '../../widgets/my_appbar.dart';
 
 class SearchMain extends StatefulWidget {
-  const SearchMain({super.key,});
+  const SearchMain({
+    super.key,
+  });
 
   @override
   State<SearchMain> createState() => _SearchMainState();
@@ -19,14 +21,12 @@ class _SearchMainState extends State<SearchMain> {
 
   @override
   Widget build(BuildContext context) {
-
     return ChangeNotifierProvider<PatientProfileProvider>(
-      create: (_)=>PatientProfileProvider(),
+      create: (_) => PatientProfileProvider(),
       child: Scaffold(
-        appBar:  const MyAppBar(),
+        appBar: const MyAppBar(),
         body: views[pageIndex],
         bottomNavigationBar: bottomNavBar(),
-
       ),
     );
   }
@@ -34,15 +34,16 @@ class _SearchMainState extends State<SearchMain> {
   BottomNavigationBar bottomNavBar() {
     return BottomNavigationBar(
       currentIndex: pageIndex,
-      onTap: (int index){
+      onTap: (int index) {
         setState(() {
           pageIndex = index;
         });
       },
       items: const [
-        BottomNavigationBarItem(icon: Icon(Icons.search_outlined), label: 'Search'),
-        BottomNavigationBarItem(icon: Icon(Icons.person_outline), label: 'Profile'),
-
+        BottomNavigationBarItem(
+            icon: Icon(Icons.search_outlined), label: 'Search'),
+        BottomNavigationBarItem(
+            icon: Icon(Icons.person_outline), label: 'Profile'),
       ],
     );
   }

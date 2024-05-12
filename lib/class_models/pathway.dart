@@ -21,9 +21,11 @@ class Pathway {
               Navigator.pop(context);
             },
             child: Text('Cancel')),
-        ElevatedButton(onPressed: () {
-          Navigator.pop(context, Pathway(name.text.trim()));
-        }, child: Text('Create Pathway'))
+        ElevatedButton(
+            onPressed: () {
+              Navigator.pop(context, Pathway(name.text.trim()));
+            },
+            child: Text('Create Pathway'))
       ],
     );
   }

@@ -64,7 +64,6 @@ class _MyAppState extends State<MyApp> {
         ListenableProvider(
           create: (_) => DBProvider(),
         ),
-
       ],
       child: MaterialApp(
         title: 'Trial Pathway',

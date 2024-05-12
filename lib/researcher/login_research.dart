@@ -14,14 +14,14 @@ class _ResearchLoginState extends State<ResearchLogin> {
   final _formKey = GlobalKey<FormState>();
   bool valid = false;
   late TextEditingController organizationController;
-  late TextEditingController usernameController ;
-  late TextEditingController passwordController ;
+  late TextEditingController usernameController;
+  late TextEditingController passwordController;
 
   @override
   void initState() {
-    organizationController = TextEditingController(text:'test');
-    usernameController = TextEditingController(text:'test');
-    passwordController = TextEditingController(text:'test');
+    organizationController = TextEditingController(text: 'test');
+    usernameController = TextEditingController(text: 'test');
+    passwordController = TextEditingController(text: 'test');
     valid = true;
     super.initState();
   }
@@ -64,8 +64,11 @@ class _ResearchLoginState extends State<ResearchLogin> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    const Text('This login page intents to use the Protocol Registration and Results System'),
-                    const SizedBox(height: 20,),
+                    const Text(
+                        'This login page intents to use the Protocol Registration and Results System'),
+                    const SizedBox(
+                      height: 20,
+                    ),
                     CustomTextFormField(
                       hintText: 'Organization',
                       controller: organizationController,
@@ -88,7 +91,8 @@ class _ResearchLoginState extends State<ResearchLogin> {
                               ? () {
                                   Navigator.of(context).pushReplacement(
                                       MaterialPageRoute(
-                                          builder: (_) => const ResearchMain()));
+                                          builder: (_) =>
+                                              const ResearchMain()));
                                 }
                               : null,
                           child: const Text('Login')),

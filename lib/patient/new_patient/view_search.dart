@@ -261,10 +261,10 @@ class BriefSummaryCard extends StatelessWidget {
                                 direction: Axis.horizontal,
                                 children: briefSummary.conditions!
                                     .map((item) => Card(
-                                        // color: Theme.of(context)
-                                        //     .colorScheme
-                                        //     .primaryContainer,
-                                        child: Padding(
+                                            // color: Theme.of(context)
+                                            //     .colorScheme
+                                            //     .primaryContainer,
+                                            child: Padding(
                                           padding: const EdgeInsets.all(5.0),
                                           child: Text(
                                             item[0],
@@ -314,7 +314,7 @@ class BriefSummaryCard extends StatelessWidget {
     return const Card(
       elevation: 0,
       // color:
-          // isEligible ? Theme.of(context).colorScheme.tertiaryContainer : null,
+      // isEligible ? Theme.of(context).colorScheme.tertiaryContainer : null,
       child: Row(
         children: [
           Padding(

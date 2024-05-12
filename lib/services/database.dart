@@ -21,15 +21,17 @@ class DataBaseService {
 
   final connectionSetting = const ConnectionSettings(sslMode: SslMode.require);
 
-  Future<Connection> initializeDatabase({String? username, String? password}) async {
-    return Connection.open(userCredentials(username, password), settings: connectionSetting);
+  Future<Connection> initializeDatabase(
+      {String? username, String? password}) async {
+    return Connection.open(userCredentials(username, password),
+        settings: connectionSetting);
   }
 
-  Endpoint userCredentials(String? username, String? password){
-    if(username==null || username.isEmpty){
+  Endpoint userCredentials(String? username, String? password) {
+    if (username == null || username.isEmpty) {
       username = _username;
     }
-    if(password==null || password.isEmpty){
+    if (password == null || password.isEmpty) {
       password = _password;
     }
     return Endpoint(
@@ -38,15 +40,13 @@ class DataBaseService {
         username: username,
         password: password);
   }
-
 }
 
 class DatabaseQueries {
   Connection connection;
 
-  
   DatabaseQueries(this.connection);
-  
+
   Future<List<ClinicalTrial>> getBriefStudies(int offset) async {
     String file = await FileStorageService()
         .readFile(fileName: '$offset', format: 'json');
@@ -65,11 +65,10 @@ class DatabaseQueries {
       Sql interventions = query.interventions;
       Sql eligibility = query.eligibility;
 
-      Result briefStudyRows = await connection.execute(briefStudy,
-          parameters: {
-            'offset': offset,
-            'country_list': getIt<Patient>().country
-          });
+      Result briefStudyRows = await connection.execute(briefStudy, parameters: {
+        'offset': offset,
+        'country_list': getIt<Patient>().country
+      });
 
       List<ClinicalTrial> result = [];
       for (int i = 0; i < 10; i++) {
@@ -89,14 +88,13 @@ class DatabaseQueries {
             parameters: {
               'nct_id': result[i].nctID
             }); //get conditions of the study
-        result[i].locations =
-            await connection.execute(locations, parameters: {
+        result[i].locations = await connection.execute(locations, parameters: {
           'nct_id': result[i].nctID,
         }); //get locations of the study
-        result[i].interventionType = await connection
-            .execute(interventions, parameters: {
-          'nct_id': result[i].nctID
-        }); //get locations of the study
+        result[i].interventionType = await connection.execute(interventions,
+            parameters: {
+              'nct_id': result[i].nctID
+            }); //get locations of the study
         Result eligibilityQuery = await connection
             .execute(eligibility, parameters: {'nct_id': result[i].nctID});
 
@@ -127,13 +125,12 @@ class DatabaseQueries {
     Result queryDetailedDescription = await connection.execute(
         query.getDetailedDescription,
         parameters: {'nct_id': clinicalTrial.nctID});
-    if(queryDetailedDescription.isNotEmpty) {
+    if (queryDetailedDescription.isNotEmpty) {
       result.detailedDescription =
           queryDetailedDescription.first.first.toString();
     }
 
-    Result queryIntervention = await connection.execute(
-        query.getIntervention,
+    Result queryIntervention = await connection.execute(query.getIntervention,
         parameters: {'nct_id': clinicalTrial.nctID});
 
     Result queryDesignOutcomes = await connection.execute(

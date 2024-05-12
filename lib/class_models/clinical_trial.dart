@@ -52,26 +52,25 @@ class ClinicalTrial {
   List<ContactLocation>? contactsLocations;
   List<ContactInformation>? contactInformation; //pointOfContact
   List<Sponsors>? sponsors;
-  ClinicalTrial({
-    required this.nctID,
-     this.lastDateUpdate,
-    required this.status,
-    required this.title,
-    required this.officialTitle,
-     this.startDate,
-     this.startDateType,
-    required this.description,
-    this.locations,
-    this.interventionType,
-    this.conditions,
-    this.eligibility,
-    this.detailedDescription,
-    this.interventions,
-    this.outcomeMeasures,
-    this.contactsLocations,
-    this.contactInformation,
-    this.sponsors
-  });
+  ClinicalTrial(
+      {required this.nctID,
+      this.lastDateUpdate,
+      required this.status,
+      required this.title,
+      required this.officialTitle,
+      this.startDate,
+      this.startDateType,
+      required this.description,
+      this.locations,
+      this.interventionType,
+      this.conditions,
+      this.eligibility,
+      this.detailedDescription,
+      this.interventions,
+      this.outcomeMeasures,
+      this.contactsLocations,
+      this.contactInformation,
+      this.sponsors});
 
   factory ClinicalTrial.fromJson(Map<String, dynamic> json) =>
       _$ClinicalTrialFromJson(json);

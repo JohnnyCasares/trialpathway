@@ -13,7 +13,10 @@ class UserType extends StatelessWidget {
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          const Text('Welcome to TrialPathWay'),
+          Text(
+            'Welcome to Trial Pathway',
+            style: Theme.of(context).textTheme.headlineMedium,
+          ),
           const Padding(
             padding: EdgeInsets.all(20.0),
             child: Image(

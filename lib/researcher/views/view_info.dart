@@ -16,24 +16,29 @@ class _InfoState extends State<Info> {
   final Researcher _researcher = getIt<Researcher>();
   late final TextEditingController _nctIDController;
   late final TextEditingController _titleController;
-  late final TextEditingController _officialTitleController ;
+  late final TextEditingController _officialTitleController;
   late final TextEditingController _descriptionController;
-  late final TextEditingController _briefDescriptionController ;
-  late final TextEditingController _conditionsController ;
-  late final TextEditingController _countriesController ;
+  late final TextEditingController _briefDescriptionController;
+  late final TextEditingController _conditionsController;
+  late final TextEditingController _countriesController;
 
   // Add controllers for other attributes as needed
   final GeneralData _generalData = GeneralData();
 
   @override
   void initState() {
-   _nctIDController =TextEditingController(text: _researcher.clinicalTrial.nctID);
-   _titleController= TextEditingController(text:_researcher.clinicalTrial.title);
-   _officialTitleController= TextEditingController(text:_researcher.clinicalTrial.officialTitle);
-   _descriptionController= TextEditingController(text:_researcher.clinicalTrial.detailedDescription);
-   _briefDescriptionController= TextEditingController(text:_researcher.clinicalTrial.description);
-   _conditionsController= TextEditingController();
-   _countriesController= TextEditingController();
+    _nctIDController =
+        TextEditingController(text: _researcher.clinicalTrial.nctID);
+    _titleController =
+        TextEditingController(text: _researcher.clinicalTrial.title);
+    _officialTitleController =
+        TextEditingController(text: _researcher.clinicalTrial.officialTitle);
+    _descriptionController = TextEditingController(
+        text: _researcher.clinicalTrial.detailedDescription);
+    _briefDescriptionController =
+        TextEditingController(text: _researcher.clinicalTrial.description);
+    _conditionsController = TextEditingController();
+    _countriesController = TextEditingController();
     super.initState();
   }
 
@@ -137,7 +142,7 @@ class _InfoState extends State<Info> {
                       onSaved: (value) {},
                       onTap: () async {
                         String? tmp =
-                            await _generalData.conditionsDialog(context);
+                            await _generalData.conditionsSearch(context);
                         setState(() {
                           _conditionsController.text = tmp.toString();
                         });
@@ -149,8 +154,8 @@ class _InfoState extends State<Info> {
                       controller: _countriesController,
                       onSaved: (value) {},
                       onTap: () async {
-                        String? tmp =
-                        await _generalData.countriesDialog(context, multipleSelection: true);
+                        String? tmp = await _generalData
+                            .countriesSearch(context, multipleSelection: true);
                         setState(() {
                           _countriesController.text = tmp.toString();
                         });

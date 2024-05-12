@@ -18,6 +18,7 @@ class _ProfileState extends State<Profile> {
   final Patient _patient = getIt<Patient>();
   final _formKey = GlobalKey<FormState>();
   late Sex _selectedSex;
+  late ProfileVisibility _visibility;
   late TextEditingController _name;
   late TextEditingController _age;
   late TextEditingController _country;
@@ -44,6 +45,7 @@ class _ProfileState extends State<Profile> {
                 .substring(1, _patient.conditions.toString().length - 1)
             : null);
     _pregnant = _patient.pregnant;
+    _visibility = _patient.visibility;
 
     super.initState();
   }
@@ -66,10 +68,9 @@ class _ProfileState extends State<Profile> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     //personal info: name, age, sex
-                    const Text(
+                    Text(
                       'Personal Information',
-                      style:
-                          TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                      style: Theme.of(context).textTheme.headlineSmall,
                     ),
                     ProfileTile(
                         title: 'Name',
@@ -185,9 +186,10 @@ class _ProfileState extends State<Profile> {
                             },
                           )),
                     //clinical info: health? conditions, pregnancy,
-                    const Text('Clinical and Medical Information',
-                        style: TextStyle(
-                            fontSize: 20, fontWeight: FontWeight.bold)),
+                    Text(
+                      'Clinical and Medical Information',
+                      style: Theme.of(context).textTheme.headlineSmall,
+                    ),
                     CheckboxListTile(
                         title: const Text('Healthy'),
                         value: _healthy,
@@ -241,7 +243,42 @@ class _ProfileState extends State<Profile> {
                             }
                             profileProvider.didProfileChange();
                           }),
-
+                    Text(
+                      'Profile Visibility',
+                      style: Theme.of(context).textTheme.headlineSmall,
+                    ),
+                    ProfileTile(
+                      title: 'Visibility',
+                      field: DropdownMenu(
+                        initialSelection: _visibility,
+                        dropdownMenuEntries: [
+                          DropdownMenuEntry(
+                              value: ProfileVisibility.Private,
+                              label: 'Private'),
+                          DropdownMenuEntry(
+                              value: ProfileVisibility.Public, label: 'Public')
+                        ],
+                        onSelected: (value) async {
+                          setState(() {
+                            _visibility = value!;
+                          });
+                          if (_visibility == ProfileVisibility.Public) {
+                            await showDialog(
+                                context: context, builder: (_) => disclaimer());
+                          }
+                          if (_visibility != _patient.visibility) {
+                            context
+                                .read<PatientProfileProvider>()
+                                .didVisibilityChange(true);
+                          } else {
+                            context
+                                .read<PatientProfileProvider>()
+                                .didVisibilityChange(false);
+                          }
+                          profileProvider.didProfileChange();
+                        },
+                      ),
+                    ),
                     Padding(
                       padding: const EdgeInsets.all(20.0),
                       child: Center(
@@ -255,7 +292,7 @@ class _ProfileState extends State<Profile> {
                               }
                             : null,
                       )),
-                    )
+                    ),
                   ],
                 ),
               ),
@@ -277,6 +314,9 @@ class _ProfileState extends State<Profile> {
       if (profileProvider.pregnant) {
         _patient.pregnant = _pregnant;
       }
+      if (profileProvider.visibility) {
+        _patient.visibility = _visibility;
+      }
       _formKey.currentState!.save();
       profileProvider.didProfileChange();
       profileProvider.resetProfileProvider();
@@ -286,7 +326,7 @@ class _ProfileState extends State<Profile> {
   Future<void> chooseCountry(
       BuildContext context, PatientProfileProvider profileProvider) async {
     String tmp =
-        (await _generalData.countriesDialog(context) ?? _country.text).trim();
+        (await _generalData.countriesSearch(context) ?? _country.text).trim();
     setState(() {
       _country.text = tmp;
     });
@@ -305,7 +345,7 @@ class _ProfileState extends State<Profile> {
     String oldValue = _patient.conditions
         .toString()
         .substring(1, _patient.conditions.toString().length - 1);
-    String tmp = (await _generalData.conditionsDialog(context,
+    String tmp = (await _generalData.conditionsSearch(context,
                 initialSelection: _conditions.text.split(',')) ??
             _conditions.text)
         .trim();
@@ -321,6 +361,46 @@ class _ProfileState extends State<Profile> {
       }
       profileProvider.didProfileChange();
     }
+  }
+
+  Widget disclaimer() {
+    return AlertDialog(
+      title: Text(
+        'Profile Privacy Disclaimer',
+      ),
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'By making your profile public, you agree to share the following information with researchers:',
+          ),
+          SizedBox(height: 10),
+          Text('- Name'),
+          Text('- Sex'),
+          Text('- Country'),
+          Text('- Conditions/Illness'),
+          Text('- Age'),
+          Text('- Health Status'),
+          SizedBox(height: 10),
+          Text(
+            'Researchers may reach out to you based on this information to invite you to participate in their research studies.',
+          ),
+        ],
+      ),
+      actions: [
+        ElevatedButton(
+            onPressed: () {
+              setState(() {
+                _visibility = ProfileVisibility.Private;
+              });
+              Navigator.pop(context);
+            },
+            child: Text('Cancel')),
+        ElevatedButton(
+            onPressed: () => Navigator.pop(context), child: Text('Accept')),
+      ],
+    );
   }
 }
 

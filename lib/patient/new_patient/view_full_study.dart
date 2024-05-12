@@ -27,12 +27,13 @@ class _ViewFullStudyState extends State<ViewFullStudy> {
         DatabaseQueries(Provider.of<DBProvider>(context).getConnection());
     return Scaffold(
       floatingActionButton: FloatingActionButton(
-        onPressed: () async{
+        onPressed: () async {
           setState(() {
-            loading=true;
+            loading = true;
           });
-          String tmp = await BartSummarize().summarizeText(text:widget.clinicalTrial.detailedDescription ??
-              widget.clinicalTrial.description);
+          String tmp = await BartSummarize().summarizeText(
+              text: widget.clinicalTrial.detailedDescription ??
+                  widget.clinicalTrial.description);
           setState(() {
             loading = false;
             summary = tmp;
@@ -59,31 +60,33 @@ class _ViewFullStudyState extends State<ViewFullStudy> {
                             fontSize: 30, fontWeight: FontWeight.bold),
                         textAlign: TextAlign.center,
                       ),
-                      if(loading||summary!=null)
-                      Padding(
-                        padding: const EdgeInsets.all(15),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const Text('Summary'),
-                            if(loading)
-                              const CircularProgressIndicator(),
-                            if(summary!=null)
-                            Container(
-                              padding: const EdgeInsets.all(10),
-                              decoration: BoxDecoration(
-                                  border: Border.all(color: Theme.of(context).colorScheme.primary),
-                                  borderRadius: BorderRadius.circular(10)
-                              ),
-                              child: AnimatedTextKit(
-                                isRepeatingAnimation: false,
-                                animatedTexts: [
-                                  TyperAnimatedText(summary!)
-                                ],
-                              ),),
-                          ],
+                      if (loading || summary != null)
+                        Padding(
+                          padding: const EdgeInsets.all(15),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const Text('Summary'),
+                              if (loading) const CircularProgressIndicator(),
+                              if (summary != null)
+                                Container(
+                                  padding: const EdgeInsets.all(10),
+                                  decoration: BoxDecoration(
+                                      border: Border.all(
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .primary),
+                                      borderRadius: BorderRadius.circular(10)),
+                                  child: AnimatedTextKit(
+                                    isRepeatingAnimation: false,
+                                    animatedTexts: [
+                                      TyperAnimatedText(summary!)
+                                    ],
+                                  ),
+                                ),
+                            ],
+                          ),
                         ),
-                      ),
                       const SizedBox(
                         height: 15,
                       ),
@@ -238,7 +241,8 @@ class _ViewFullStudyState extends State<ViewFullStudy> {
       DataCell(Text('${contactInformation.email}')),
     ]);
   }
- //todo change format in which this is displayed. Emphasize contacts
+
+  //todo change format in which this is displayed. Emphasize contacts
   DataRow locationsAndContacts(ContactLocation contactLocation) {
     return DataRow(cells: [
       DataCell(Text(contactLocation.name ?? 'N/A')),
