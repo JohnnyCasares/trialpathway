@@ -55,6 +55,14 @@ To run this project, it's crucial to have access to the AACT (Aggregate Analysis
 
 It's essential to complete these steps to ensure the app can retrieve comprehensive trial data directly from AACT for use in the application.
 
+## Download the Application:
+
+You can download the latest version of the Clinical Trial Streamlining Application from the GitHub releases.
+
+- **Android:** [Download APK](https://github.com/JohnnyCasares/trialpathway/releases/tag/v1-beta)
+- **Windows:** [Download Installer](https://github.com/JohnnyCasares/trialpathway/releases/tag/v1-beta)
+
+Make sure to check out the [release notes](https://github.com/JohnnyCasares/trialpathway/releases/tag/v1-beta) for information on the latest features and improvements.
 
 ## Contributing:
 
